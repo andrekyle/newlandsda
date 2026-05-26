@@ -80,7 +80,7 @@ function Events() {
 
   return (
     <PageShell>
-      <PageHero title="Upcoming Events" subtitle="Come and be part of what God is doing at Newlands SDA." />
+      <PageHero title="Upcoming Events" subtitle="Come and be part of what God is doing at Newlands SDA." overlay={false} />
       <section className="mx-auto max-w-4xl px-4 py-16 space-y-4">
         {editMode && (
           <button

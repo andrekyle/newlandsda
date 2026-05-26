@@ -22,16 +22,19 @@ export function MinistryTileVisual({
   gradient,
   Icon,
   iconSize = "h-14 w-14",
+  defaultImage,
 }: {
   ministryId: string;
   gradient: string;
   Icon: LucideIcon;
   iconSize?: string;
+  defaultImage?: string;
 }) {
   const id = `ministries.${ministryId}.tile.image`;
   const { editMode } = useAdmin();
-  const [src] = useOverride<string>(id, TRANSPARENT_PIXEL);
-  const hasCustomImage = src !== TRANSPARENT_PIXEL;
+  const fallback = defaultImage ?? TRANSPARENT_PIXEL;
+  const [src] = useOverride<string>(id, fallback);
+  const hasImage = src !== TRANSPARENT_PIXEL;
 
   if (editMode) {
     return (
@@ -41,18 +44,20 @@ export function MinistryTileVisual({
         <div className="absolute inset-0">
           <EditableImage
             id={id}
-            defaultSrc={TRANSPARENT_PIXEL}
+            defaultSrc={fallback}
             alt=""
             className="h-full w-full object-cover"
             wrapperClassName="block h-full w-full"
           />
         </div>
-        <Icon className={`relative ${iconSize} text-white/90`} aria-hidden />
+        {!hasImage && (
+          <Icon className={`relative ${iconSize} text-white/90`} aria-hidden />
+        )}
       </div>
     );
   }
 
-  if (hasCustomImage) {
+  if (hasImage) {
     return (
       <div className="relative w-full bg-muted overflow-hidden">
         <img src={src} alt="" className="block w-full h-auto" />
@@ -103,7 +108,7 @@ function Ministries() {
                 params={{ ministryId: m.id }}
                 className="group flex flex-col bg-card border border-border/50 rounded-sm overflow-hidden hover:border-primary/50 transition-colors"
               >
-                <MinistryTileVisual ministryId={m.id} gradient={m.gradient} Icon={Icon} />
+                <MinistryTileVisual ministryId={m.id} gradient={m.gradient} Icon={Icon} defaultImage={m.bannerImage} />
                 <div className="flex-1 flex flex-col p-6">
                   <h2 className="text-xl font-semibold tracking-tight">
                     <EditableText id={`ministries.${m.id}.title`} defaultValue={m.title} as="span" />

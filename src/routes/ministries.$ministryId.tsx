@@ -217,6 +217,7 @@ function MinistryDetail() {
                       gradient={o.gradient}
                       Icon={OIcon}
                       iconSize="h-10 w-10"
+                      defaultImage={o.bannerImage}
                     />
                     <div className="p-5">
                       <h3 className="text-lg font-semibold tracking-tight">{o.title}</h3>

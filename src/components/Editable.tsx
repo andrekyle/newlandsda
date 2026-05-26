@@ -161,10 +161,16 @@ export function EditableImage({
 
   const wrapperHasOwnPosition = /\b(absolute|fixed|sticky)\b/.test(wrapperClassName ?? "");
   const positionClass = wrapperHasOwnPosition ? "" : "relative";
+  // If the consumer supplied their own display utility (e.g. `block`,
+  // `flex`, `grid`), don't force `inline-block` — it would beat their
+  // class and collapse the upload control to the image's natural size
+  // inside an absolutely-positioned banner container.
+  const wrapperHasOwnDisplay = /\b(block|flex|grid|inline-flex|inline-grid|hidden)\b/.test(wrapperClassName ?? "");
+  const displayClass = wrapperHasOwnDisplay ? "" : "inline-block";
 
   return (
     <span
-      className={`${positionClass} inline-block group z-10 ${wrapperClassName ?? ""}`}
+      className={`${positionClass} ${displayClass} group z-10 ${wrapperClassName ?? ""}`}
       // When the editable image is nested inside an <a>/Link (e.g. the brand
       // logo), clicks would otherwise trigger navigation in two ways:
       //   1. TanStack Router's onClick on the anchor → push state.

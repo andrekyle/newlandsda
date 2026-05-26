@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { EditableImage, EditableText } from "@/components/Editable";
 import { Mail, Phone } from "lucide-react";
-import aboutBanner from "@/assets/about-banner.svg";
+import aboutBanner from "@/assets/about.png";
 
 export const Route = createFileRoute("/about")({
   component: About,

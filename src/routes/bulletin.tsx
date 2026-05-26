@@ -4,7 +4,7 @@ import { CalendarDays, FileText, Plus, Trash2 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { useAdmin, useOverride } from "@/lib/admin";
-import bannerDefault from "@/assets/hero-church.jpg";
+import bannerDefault from "@/assets/default-banner.png";
 import {
   bulletins as staticBulletins,
   getBulletin,

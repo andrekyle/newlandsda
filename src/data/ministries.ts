@@ -12,6 +12,17 @@ import {
   Flower,
   Sparkles,
 } from "lucide-react";
+import communicationBanner from "@/assets/communication.png";
+import familyLifeBanner from "@/assets/family-life.png";
+import healthBanner from "@/assets/health.png";
+import mensMinistryBanner from "@/assets/mens-ministry.png";
+import pathfindersBanner from "@/assets/pathfinders.png";
+import personalMinistryBanner from "@/assets/personal-ministry.png";
+import sabbathSchoolBanner from "@/assets/sabbath-school.png";
+import stewardshipBanner from "@/assets/stewardship.png";
+import treasuryBanner from "@/assets/treasury.png";
+import womensMinistriesBanner from "@/assets/womens-ministries.png";
+import youthBanner from "@/assets/youth.png";
 
 export type Ministry = {
   id: string;
@@ -30,6 +41,8 @@ export type Ministry = {
   description: string[];
   /** Bullet list of activities / focus areas. */
   activities: string[];
+  /** Optional pre-designed banner image for the detail-page hero. */
+  bannerImage?: string;
 };
 
 export const ministries: Ministry[] = [
@@ -55,6 +68,7 @@ export const ministries: Ministry[] = [
       "Weekly bulletin & event posters",
       "Press releases & public relations",
     ],
+    bannerImage: communicationBanner,
   },
   {
     id: "family-life",
@@ -78,6 +92,7 @@ export const ministries: Ministry[] = [
       "Pre-marital counselling support",
       "Family-night fellowship dinners",
     ],
+    bannerImage: familyLifeBanner,
   },
   {
     id: "health",
@@ -101,6 +116,7 @@ export const ministries: Ministry[] = [
       "Stop-smoking & lifestyle programs",
       "Mental-health & stress-relief evenings",
     ],
+    bannerImage: healthBanner,
   },
   {
     id: "mens-ministry",
@@ -124,6 +140,7 @@ export const ministries: Ministry[] = [
       "Bible-study small groups",
       "Community service projects",
     ],
+    bannerImage: mensMinistryBanner,
   },
   {
     id: "pathfinders",
@@ -147,6 +164,7 @@ export const ministries: Ministry[] = [
       "Camporees and outdoor adventures",
       "Community service & outreach",
     ],
+    bannerImage: pathfindersBanner,
   },
   {
     id: "personal-ministry",
@@ -170,6 +188,7 @@ export const ministries: Ministry[] = [
       "Small-group leadership training",
       "Community evangelism campaigns",
     ],
+    bannerImage: personalMinistryBanner,
   },
   {
     id: "sabbath-school",
@@ -193,6 +212,7 @@ export const ministries: Ministry[] = [
       "Children's divisions (Beginner, Kindergarten, Primary, Juniors)",
       "Mission story & global focus each Sabbath",
     ],
+    bannerImage: sabbathSchoolBanner,
   },
   {
     id: "stewardship",
@@ -216,6 +236,7 @@ export const ministries: Ministry[] = [
       "Tithe & offering education",
       "Time & talent inventories for service",
     ],
+    bannerImage: stewardshipBanner,
   },
   {
     id: "treasury",
@@ -239,6 +260,7 @@ export const ministries: Ministry[] = [
       "Annual audit & board reporting",
       "Donor records & receipts",
     ],
+    bannerImage: treasuryBanner,
   },
   {
     id: "womens-ministries",
@@ -262,6 +284,7 @@ export const ministries: Ministry[] = [
       "Mentorship & prayer partners",
       "Community outreach projects",
     ],
+    bannerImage: womensMinistriesBanner,
   },
   {
     id: "youth",
@@ -285,6 +308,7 @@ export const ministries: Ministry[] = [
       "Ambassador & Senior Youth groups",
       "Youth Sabbath services",
     ],
+    bannerImage: youthBanner,
   },
 ];
 

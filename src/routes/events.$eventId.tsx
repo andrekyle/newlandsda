@@ -4,7 +4,7 @@ import { EditableImage } from "@/components/Editable";
 import { Calendar, MapPin, Clock, ArrowLeft } from "lucide-react";
 import { getEvent, events, type ChurchEvent } from "@/data/events";
 import { useOverride } from "@/lib/admin";
-import bannerDefault from "@/assets/hero-church.jpg";
+import bannerDefault from "@/assets/default-banner.png";
 
 export const Route = createFileRoute("/events/$eventId")({
   component: EventDetail,

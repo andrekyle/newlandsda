@@ -5,6 +5,7 @@ import { EditableText } from "@/components/Editable";
 import { Calendar, MapPin, ArrowRight, Plus, Trash2 } from "lucide-react";
 import { events, type ChurchEvent } from "@/data/events";
 import { useAdmin, useOverride } from "@/lib/admin";
+import eventsBanner from "@/assets/events.png";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -80,7 +81,7 @@ function Events() {
 
   return (
     <PageShell>
-      <PageHero title="Upcoming Events" subtitle="Come and be part of what God is doing at Newlands SDA." overlay={false} />
+      <PageHero title="Upcoming Events" subtitle="Come and be part of what God is doing at Newlands SDA." image={eventsBanner} overlay={false} />
       <section className="mx-auto max-w-4xl px-4 py-16 space-y-4">
         {editMode && (
           <button

@@ -76,6 +76,7 @@ function MinistryDetail() {
           for this ministry. Same id as before so existing uploads persist. */}
       <PageHero
         title={m.title}
+        image={m.bannerImage}
         imageId={`pagehero.ministry.${m.id}.image`}
         overlay={false}
       />

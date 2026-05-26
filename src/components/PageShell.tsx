@@ -1,7 +1,7 @@
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { EditableImage, EditableText } from "./Editable";
-import defaultBanner from "@/assets/hero-church.jpg";
+import defaultBanner from "@/assets/default-banner.png";
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (

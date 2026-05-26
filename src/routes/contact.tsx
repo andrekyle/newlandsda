@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import contactBanner from "@/assets/contact.png";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/contact")({
 function Contact() {
   return (
     <PageShell>
-      <PageHero title="Contact Us" subtitle="We'd love to hear from you. Come visit, call, or send a message." overlay={false} />
+      <PageHero title="Contact Us" subtitle="We'd love to hear from you. Come visit, call, or send a message." image={contactBanner} overlay={false} />
       <section className="mx-auto max-w-6xl px-4 py-16 grid gap-12 md:grid-cols-2">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight mb-6">Get in Touch</h2>

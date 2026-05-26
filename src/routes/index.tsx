@@ -54,6 +54,7 @@ function Home() {
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05]">
               Welcome to{" "}
+              <br className="sm:hidden" />
               <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Newlands SDA
               </span>{" "}

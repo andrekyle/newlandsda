@@ -58,6 +58,7 @@ function Home() {
               <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Newlands SDA
               </span>{" "}
+              <br className="sm:hidden" />
               Church
             </h1>
 

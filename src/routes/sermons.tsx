@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { Play, User, Search, Video, Youtube, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
+import sermonsBanner from "@/assets/sermons.png";
 
 const CHANNEL_ID = "UCRsK1USoQS7quKLVZ_itPPA"; // @JoburgNorthSDA
 const CHANNEL_URL = "https://www.youtube.com/@JoburgNorthSDA";
@@ -138,6 +139,8 @@ function Sermons() {
       <PageHero
         title="Sermons"
         subtitle="Bible-based messages from our YouTube channel, updated automatically."
+        image={sermonsBanner}
+        overlay={false}
       />
 
       {/* Channel CTA */}

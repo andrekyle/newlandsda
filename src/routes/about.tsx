@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { EditableImage, EditableText } from "@/components/Editable";
 import { Mail, Phone } from "lucide-react";
-import bible from "@/assets/bible.jpg";
+import aboutBanner from "@/assets/about-banner.svg";
 
 export const Route = createFileRoute("/about")({
   component: About,
@@ -34,7 +34,7 @@ function slug(s: string) {
 function About() {
   return (
     <PageShell>
-      <PageHero title="About Our Church" subtitle="Faith, hope, and love at the heart of our community." image={bible} overlay={false} />
+      <PageHero title="About Our Church" subtitle="Faith, hope, and love at the heart of our community." image={aboutBanner} overlay={false} />
       <article className="mx-auto max-w-3xl px-4 py-16 prose prose-lg">
         <EditableText id="about.mission.heading" defaultValue="Our Mission" as="h2" className="text-3xl font-semibold tracking-tight text-foreground" />
         <EditableText

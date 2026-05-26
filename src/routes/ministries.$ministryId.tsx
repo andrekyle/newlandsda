@@ -91,7 +91,7 @@ function MinistryDetail() {
           />
         </div>
         <div className="absolute inset-0 bg-black/30" aria-hidden />
-        <div className="relative mx-auto max-w-5xl px-4 py-20 md:py-28 text-white">
+        <div className="relative mx-auto max-w-5xl px-4 py-10 md:py-14 text-white">
           <Link
             to="/ministries"
             className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white mb-6 transition-colors"

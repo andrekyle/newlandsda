@@ -20,12 +20,48 @@ function slugify(s: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-export function PageHero({ title, subtitle, image, imageId }: { title: string; subtitle?: string; image?: string; imageId?: string }) {
+export function PageHero({
+  title,
+  subtitle,
+  image,
+  imageId,
+  overlay = true,
+}: {
+  title: string;
+  subtitle?: string;
+  image?: string;
+  imageId?: string;
+  /**
+   * When false, the eyebrow / title / subtitle text overlay is hidden and
+   * the banner image stands on its own. Use this when the uploaded banner
+   * already contains its own title art (e.g. a designed marketing banner).
+   */
+  overlay?: boolean;
+}) {
   // Every page now gets a banner. If the page doesn't supply one, we fall
   // back to a shared default — admins can upload a unique banner per page
   // via the EditableImage (each page has its own stable id).
   const bannerSrc = image ?? defaultBanner;
   const id = imageId ?? `pagehero.${slugify(title)}.image`;
+
+  if (!overlay) {
+    // Image-only banner: let the image dictate the height via an aspect
+    // ratio container, no text overlay, no scrim.
+    return (
+      <section className="relative bg-card overflow-hidden">
+        <div className="aspect-[21/9] sm:aspect-[3/1] lg:aspect-[24/7]">
+          <EditableImage
+            id={id}
+            defaultSrc={bannerSrc}
+            alt={title}
+            className="h-full w-full object-cover"
+            wrapperClassName="block h-full w-full"
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative bg-card overflow-hidden">
       <div className="absolute inset-0">

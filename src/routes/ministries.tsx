@@ -24,6 +24,7 @@ function Ministries() {
       <PageHero
         title="Our Ministries"
         subtitle="There is a place for everyone to grow, serve, and belong at Newlands SDA. Explore each ministry below."
+        overlay={false}
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16">

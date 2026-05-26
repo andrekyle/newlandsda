@@ -53,7 +53,7 @@ function Ministries() {
                       id={`ministries.${m.id}.tile.image`}
                       defaultSrc={TRANSPARENT_PIXEL}
                       alt=""
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain"
                       wrapperClassName="block h-full w-full"
                     />
                   </div>

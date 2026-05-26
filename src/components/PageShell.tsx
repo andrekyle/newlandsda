@@ -49,7 +49,7 @@ export function PageHero({
     // ratio container, no text overlay, no scrim. Use `object-contain` so
     // a designed banner (with its own title art) is never cropped.
     return (
-      <section className="relative bg-card overflow-hidden">
+      <section className="relative bg-card overflow-hidden mt-[30px]">
         <div className="aspect-[16/9] sm:aspect-[2/1] lg:aspect-[5/2] max-h-[80vh]">
           <EditableImage
             id={id}
@@ -64,7 +64,7 @@ export function PageHero({
   }
 
   return (
-    <section className="relative bg-card overflow-hidden">
+    <section className="relative bg-card overflow-hidden mt-[30px]">
       <div className="absolute inset-0">
         <EditableImage
           id={id}

@@ -54,8 +54,8 @@ export function MinistryTileVisual({
 
   if (hasCustomImage) {
     return (
-      <div className="relative aspect-video bg-muted flex items-center justify-center overflow-hidden">
-        <img src={src} alt="" className="h-full w-full object-contain" />
+      <div className="relative w-full bg-muted overflow-hidden">
+        <img src={src} alt="" className="block w-full h-auto" />
       </div>
     );
   }

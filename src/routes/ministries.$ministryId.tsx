@@ -1,13 +1,9 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { PageShell } from "@/components/PageShell";
-import { EditableText, EditableImage } from "@/components/Editable";
+import { PageShell, PageHero } from "@/components/PageShell";
+import { EditableText } from "@/components/Editable";
 import { ArrowLeft, ArrowRight, Users, Clock, MapPin } from "lucide-react";
 import { getMinistry, ministries } from "@/data/ministries";
 import { MinistryTileVisual } from "./ministries";
-
-/** 1×1 transparent PNG — used as the default banner so the gradient shows through until an admin uploads a real image. */
-const TRANSPARENT_PIXEL =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 export const Route = createFileRoute("/ministries/$ministryId")({
   component: MinistryDetail,
@@ -76,37 +72,35 @@ function MinistryDetail() {
 
   return (
     <PageShell>
-      {/* Hero banner with gradient + icon + optional uploaded image */}
-      <section
-        className={`relative bg-linear-to-br ${m.gradient} overflow-hidden`}
-      >
-        {/* Optional admin-uploaded banner image, shown above the gradient */}
-        <div className="absolute inset-0">
-          <EditableImage
-            id={`pagehero.ministry.${m.id}.image`}
-            defaultSrc={TRANSPARENT_PIXEL}
-            alt=""
-            className="h-full w-full object-cover"
-            wrapperClassName="block h-full w-full"
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/30" aria-hidden />
-        <div className="relative mx-auto max-w-5xl px-4 py-10 md:py-14 text-white">
+      {/* Image-only hero banner — admin uploads the designed banner art
+          for this ministry. Same id as before so existing uploads persist. */}
+      <PageHero
+        title={m.title}
+        imageId={`pagehero.ministry.${m.id}.image`}
+        overlay={false}
+      />
+
+      {/* Title block + back link sit below the banner so they don't
+          overlap the designed art. */}
+      <section className="bg-card border-b border-border/50">
+        <div className="mx-auto max-w-5xl px-4 py-8">
           <Link
             to="/ministries"
-            className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> All Ministries
           </Link>
           <div className="flex items-start gap-5">
-            <div className="hidden sm:flex h-20 w-20 rounded-sm bg-white/15 backdrop-blur-sm items-center justify-center shrink-0">
-              <Icon className="h-10 w-10 text-white" />
+            <div
+              className={`hidden sm:flex h-16 w-16 rounded-sm bg-linear-to-br ${m.gradient} items-center justify-center shrink-0`}
+            >
+              <Icon className="h-8 w-8 text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">
+              <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
                 <EditableText id={`ministries.${m.id}.title`} defaultValue={m.title} as="span" />
               </h1>
-              <p className="mt-3 text-base md:text-lg text-white/90 italic">
+              <p className="mt-2 text-base md:text-lg text-muted-foreground italic">
                 <EditableText
                   id={`ministries.${m.id}.tagline`}
                   defaultValue={m.tagline}

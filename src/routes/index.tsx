@@ -7,6 +7,7 @@ import congregation from "@/assets/congregation.jpg";
 import bible from "@/assets/bible.jpg";
 import children from "@/assets/children.jpg";
 import heroImage from "@/assets/hero.png";
+import heroMobileImage from "@/assets/heroMobile.png";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -22,14 +23,23 @@ function Home() {
   const [mapLight, setMapLight] = useState(false);
   return (
     <PageShell>
-      {/* Hero — full-bleed image; header overlays the top */}
+      {/* Hero — full-bleed image; header overlays the top.
+          Mobile gets a dedicated portrait-friendly variant. */}
       <section className="relative overflow-hidden bg-black">
+        <EditableImage
+          id="home.hero.image.mobile"
+          defaultSrc={heroMobileImage}
+          alt="A lighthouse beneath a starry sky — Thy word is a lamp unto my feet, and a light unto my path. Psalm 119:105"
+          className="block sm:hidden w-full h-auto -mt-16"
+          wrapperClassName="block sm:hidden w-full"
+          fetchPriority="high"
+        />
         <EditableImage
           id="home.hero.image"
           defaultSrc={heroImage}
           alt="A lighthouse beneath a starry sky — Thy word is a lamp unto my feet, and a light unto my path. Psalm 119:105"
-          className="block w-full h-auto -mt-16 sm:-mt-[100px]"
-          wrapperClassName="block w-full"
+          className="hidden sm:block w-full h-auto sm:-mt-[100px]"
+          wrapperClassName="hidden sm:block w-full"
           fetchPriority="high"
         />
       </section>

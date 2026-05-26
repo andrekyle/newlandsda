@@ -19,5 +19,17 @@ export default defineConfig({
     tanstackStart({ server: { entry: "server" } }),
     viteReact(),
   ],
+  // On Vercel, fully bundle the SSR output so the serverless function has
+  // zero external bare-specifier imports. Vercel's NFT trace can't always
+  // resolve subpath exports like `@tanstack/router-core/ssr/server`, which
+  // causes "referencing unsupported modules" errors. Bundling everything
+  // avoids that entirely. (Node built-ins remain external.)
+  ...(isVercel
+    ? {
+        ssr: {
+          noExternal: true,
+        },
+      }
+    : {}),
 });
 

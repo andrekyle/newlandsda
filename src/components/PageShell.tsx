@@ -45,26 +45,24 @@ export function PageHero({
   const id = imageId ?? `pagehero.${slugify(title)}.image`;
 
   if (!overlay) {
-    // Image-only banner: let the image dictate the height via an aspect
-    // ratio container, no text overlay, no scrim. Use `object-contain` so
-    // a designed banner (with its own title art) is never cropped.
+    // Image-only banner: render the uploaded image at its natural
+    // aspect ratio (full-width, auto height) so a designed banner
+    // is shown intact with no letterbox bars or empty space.
     return (
-      <section className="relative bg-card overflow-hidden mt-[30px]">
-        <div className="aspect-[16/9] sm:aspect-[2/1] lg:aspect-[5/2] max-h-[80vh]">
-          <EditableImage
-            id={id}
-            defaultSrc={bannerSrc}
-            alt={title}
-            className="h-full w-full object-contain"
-            wrapperClassName="block h-full w-full"
-          />
-        </div>
+      <section className="relative bg-background overflow-hidden">
+        <EditableImage
+          id={id}
+          defaultSrc={bannerSrc}
+          alt={title}
+          className="block w-full h-auto"
+          wrapperClassName="block w-full"
+        />
       </section>
     );
   }
 
   return (
-    <section className="relative bg-card overflow-hidden mt-[30px]">
+    <section className="relative bg-card overflow-hidden">
       <div className="absolute inset-0">
         <EditableImage
           id={id}

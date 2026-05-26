@@ -1,12 +1,73 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
-import { ArrowRight } from "lucide-react";
+import { useAdmin, useOverride } from "@/lib/admin";
+import { ArrowRight, type LucideIcon } from "lucide-react";
 import { ministries } from "@/data/ministries";
 
 /** 1×1 transparent PNG — used as the default tile image so the gradient + icon show through until an admin uploads a photo. */
 const TRANSPARENT_PIXEL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+/**
+ * Tile visual area for a ministry card. When no custom image has been
+ * uploaded, shows the brand gradient with a centered icon. When an admin
+ * uploads a photo, hides the gradient + icon and shows the full image on
+ * a neutral background (so no gradient color "leaks" around the sides of
+ * portraits / non-16:9 photos). In edit mode the upload control is always
+ * visible on top of the gradient so admins can add or replace photos.
+ */
+export function MinistryTileVisual({
+  ministryId,
+  gradient,
+  Icon,
+  iconSize = "h-14 w-14",
+}: {
+  ministryId: string;
+  gradient: string;
+  Icon: LucideIcon;
+  iconSize?: string;
+}) {
+  const id = `ministries.${ministryId}.tile.image`;
+  const { editMode } = useAdmin();
+  const [src] = useOverride<string>(id, TRANSPARENT_PIXEL);
+  const hasCustomImage = src !== TRANSPARENT_PIXEL;
+
+  if (editMode) {
+    return (
+      <div
+        className={`relative aspect-video bg-linear-to-br ${gradient} flex items-center justify-center`}
+      >
+        <div className="absolute inset-0">
+          <EditableImage
+            id={id}
+            defaultSrc={TRANSPARENT_PIXEL}
+            alt=""
+            className="h-full w-full object-cover"
+            wrapperClassName="block h-full w-full"
+          />
+        </div>
+        <Icon className={`relative ${iconSize} text-white/90`} aria-hidden />
+      </div>
+    );
+  }
+
+  if (hasCustomImage) {
+    return (
+      <div className="relative aspect-video bg-muted flex items-center justify-center overflow-hidden">
+        <img src={src} alt="" className="h-full w-full object-contain" />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`relative aspect-video bg-linear-to-br ${gradient} flex items-center justify-center`}
+    >
+      <Icon className={`${iconSize} text-white/90`} aria-hidden />
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/ministries")({
   component: Ministries,
@@ -42,23 +103,7 @@ function Ministries() {
                 params={{ ministryId: m.id }}
                 className="group flex flex-col bg-card border border-border/50 rounded-sm overflow-hidden hover:border-primary/50 transition-colors"
               >
-                <div
-                  className={`relative aspect-video bg-linear-to-br ${m.gradient} flex items-center justify-center`}
-                >
-                  {/* Admin-uploadable tile photo — layered above the gradient.
-                      Defaults to transparent so the gradient + icon are visible
-                      until a photo is provided. */}
-                  <div className="absolute inset-0">
-                    <EditableImage
-                      id={`ministries.${m.id}.tile.image`}
-                      defaultSrc={TRANSPARENT_PIXEL}
-                      alt=""
-                      className="h-full w-full object-cover"
-                      wrapperClassName="block h-full w-full"
-                    />
-                  </div>
-                  <Icon className="relative h-14 w-14 text-white/90" aria-hidden />
-                </div>
+                <MinistryTileVisual ministryId={m.id} gradient={m.gradient} Icon={Icon} />
                 <div className="flex-1 flex flex-col p-6">
                   <h2 className="text-xl font-semibold tracking-tight">
                     <EditableText id={`ministries.${m.id}.title`} defaultValue={m.title} as="span" />

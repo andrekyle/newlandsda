@@ -3,6 +3,7 @@ import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { ArrowLeft, ArrowRight, Users, Clock, MapPin } from "lucide-react";
 import { getMinistry, ministries } from "@/data/ministries";
+import { MinistryTileVisual } from "./ministries";
 
 /** 1×1 transparent PNG — used as the default banner so the gradient shows through until an admin uploads a real image. */
 const TRANSPARENT_PIXEL =
@@ -216,20 +217,12 @@ function MinistryDetail() {
                     params={{ ministryId: o.id }}
                     className="group flex flex-col bg-background border border-border/50 rounded-sm overflow-hidden hover:border-primary/50 transition-colors"
                   >
-                    <div
-                      className={`relative aspect-video bg-linear-to-br ${o.gradient} flex items-center justify-center`}
-                    >
-                      <div className="absolute inset-0">
-                        <EditableImage
-                          id={`ministries.${o.id}.tile.image`}
-                          defaultSrc={TRANSPARENT_PIXEL}
-                          alt=""
-                          className="h-full w-full object-cover"
-                          wrapperClassName="block h-full w-full"
-                        />
-                      </div>
-                      <OIcon className="relative h-10 w-10 text-white/90" aria-hidden />
-                    </div>
+                    <MinistryTileVisual
+                      ministryId={o.id}
+                      gradient={o.gradient}
+                      Icon={OIcon}
+                      iconSize="h-10 w-10"
+                    />
                     <div className="p-5">
                       <h3 className="text-lg font-semibold tracking-tight">{o.title}</h3>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{o.short}</p>

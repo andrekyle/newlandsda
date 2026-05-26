@@ -1,6 +1,7 @@
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { EditableImage, EditableText } from "./Editable";
+import defaultBanner from "@/assets/hero-church.jpg";
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
@@ -20,35 +21,36 @@ function slugify(s: string): string {
 }
 
 export function PageHero({ title, subtitle, image, imageId }: { title: string; subtitle?: string; image?: string; imageId?: string }) {
-  const hasImage = !!image;
+  // Every page now gets a banner. If the page doesn't supply one, we fall
+  // back to a shared default — admins can upload a unique banner per page
+  // via the EditableImage (each page has its own stable id).
+  const bannerSrc = image ?? defaultBanner;
   const id = imageId ?? `pagehero.${slugify(title)}.image`;
   return (
     <section className="relative bg-card overflow-hidden">
-      {image && (
-        <div className="absolute inset-0">
-          <EditableImage
-            id={id}
-            defaultSrc={image}
-            alt=""
-            className="h-full w-full object-cover opacity-70"
-            wrapperClassName="block h-full w-full"
-          />
-          {/* Dark scrim for legible text in both light and dark modes */}
-          <div aria-hidden className="absolute inset-0 bg-black/25" />
-        </div>
-      )}
+      <div className="absolute inset-0">
+        <EditableImage
+          id={id}
+          defaultSrc={bannerSrc}
+          alt=""
+          className="h-full w-full object-cover opacity-70"
+          wrapperClassName="block h-full w-full"
+        />
+        {/* Dark scrim for legible text in both light and dark modes */}
+        <div aria-hidden className="absolute inset-0 bg-black/25" />
+      </div>
       <div className="relative mx-auto max-w-6xl px-4 py-20 text-center">
         <EditableText
           id={`pagehero.${slugify(title)}.eyebrow`}
           defaultValue="Newlands SDA"
           as="div"
-          className={`text-xs font-semibold uppercase tracking-wide mb-3 ${hasImage ? "text-primary drop-shadow" : "text-primary"}`}
+          className="text-xs font-semibold uppercase tracking-wide mb-3 text-primary drop-shadow"
         />
         <EditableText
           id={`pagehero.${slugify(title)}.title`}
           defaultValue={title}
           as="h1"
-          className={`font-serif-display text-4xl md:text-5xl tracking-tight ${hasImage ? "text-white drop-shadow" : "text-foreground"}`}
+          className="font-serif-display text-4xl md:text-5xl tracking-tight text-white drop-shadow"
         />
         {subtitle && (
           <EditableText
@@ -56,7 +58,7 @@ export function PageHero({ title, subtitle, image, imageId }: { title: string; s
             defaultValue={subtitle}
             as="p"
             multiline
-            className={`mt-4 text-lg max-w-2xl mx-auto ${hasImage ? "text-white/85 drop-shadow" : "text-muted-foreground"}`}
+            className="mt-4 text-lg max-w-2xl mx-auto text-white/85 drop-shadow"
           />
         )}
       </div>

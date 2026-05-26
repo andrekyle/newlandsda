@@ -4,6 +4,7 @@ import { CalendarDays, FileText, Plus, Trash2 } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { useAdmin, useOverride } from "@/lib/admin";
+import bannerDefault from "@/assets/hero-church.jpg";
 import {
   bulletins as staticBulletins,
   getBulletin,
@@ -115,7 +116,16 @@ function BulletinPage() {
     <PageShell>
       {/* Hero */}
       <section className="relative bg-card overflow-hidden">
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0">
+          <EditableImage
+            id="pagehero.bulletin.image"
+            defaultSrc={bannerDefault}
+            alt=""
+            className="h-full w-full object-cover opacity-70"
+            wrapperClassName="block h-full w-full"
+          />
+          <div aria-hidden className="absolute inset-0 bg-black/40" />
+        </div>
         <div className="relative mx-auto max-w-6xl px-4 py-24">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 mb-4 text-white/80">

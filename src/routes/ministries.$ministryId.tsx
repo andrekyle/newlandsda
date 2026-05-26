@@ -1,8 +1,12 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { PageShell } from "@/components/PageShell";
-import { EditableText } from "@/components/Editable";
+import { EditableText, EditableImage } from "@/components/Editable";
 import { ArrowLeft, ArrowRight, Users, Clock, MapPin } from "lucide-react";
 import { getMinistry, ministries } from "@/data/ministries";
+
+/** 1×1 transparent PNG — used as the default banner so the gradient shows through until an admin uploads a real image. */
+const TRANSPARENT_PIXEL =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 export const Route = createFileRoute("/ministries/$ministryId")({
   component: MinistryDetail,
@@ -71,11 +75,21 @@ function MinistryDetail() {
 
   return (
     <PageShell>
-      {/* Hero banner with gradient + icon */}
+      {/* Hero banner with gradient + icon + optional uploaded image */}
       <section
         className={`relative bg-linear-to-br ${m.gradient} overflow-hidden`}
       >
-        <div className="absolute inset-0 bg-black/20" aria-hidden />
+        {/* Optional admin-uploaded banner image, shown above the gradient */}
+        <div className="absolute inset-0">
+          <EditableImage
+            id={`pagehero.ministry.${m.id}.image`}
+            defaultSrc={TRANSPARENT_PIXEL}
+            alt=""
+            className="h-full w-full object-cover"
+            wrapperClassName="block h-full w-full"
+          />
+        </div>
+        <div className="absolute inset-0 bg-black/30" aria-hidden />
         <div className="relative mx-auto max-w-5xl px-4 py-20 md:py-28 text-white">
           <Link
             to="/ministries"

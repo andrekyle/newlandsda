@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { PageShell } from "@/components/PageShell";
+import { EditableImage } from "@/components/Editable";
 import { Calendar, MapPin, Clock, ArrowLeft } from "lucide-react";
 import { getEvent, events, type ChurchEvent } from "@/data/events";
 import { useOverride } from "@/lib/admin";
+import bannerDefault from "@/assets/hero-church.jpg";
 
 export const Route = createFileRoute("/events/$eventId")({
   component: EventDetail,
@@ -59,15 +61,25 @@ function EventDetail() {
   return (
     <PageShell>
       <section className="relative bg-card overflow-hidden">
-        <div className="mx-auto max-w-4xl px-4 py-20">
-          <Link to="/events" className="inline-flex items-center gap-2 text-sm text-primary mb-6 hover:opacity-80 transition-opacity">
+        <div className="absolute inset-0">
+          <EditableImage
+            id={`pagehero.event.${event.id}.image`}
+            defaultSrc={bannerDefault}
+            alt=""
+            className="h-full w-full object-cover opacity-60"
+            wrapperClassName="block h-full w-full"
+          />
+          <div aria-hidden className="absolute inset-0 bg-black/40" />
+        </div>
+        <div className="relative mx-auto max-w-4xl px-4 py-20">
+          <Link to="/events" className="inline-flex items-center gap-2 text-sm text-white/90 mb-6 hover:text-white transition-colors">
             <ArrowLeft className="h-4 w-4" /> All Events
           </Link>
           {event.featured && (
-            <div className="text-xs font-semibold uppercase tracking-wide text-primary mb-3">Featured Event</div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-primary mb-3 drop-shadow">Featured Event</div>
           )}
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">{event.title}</h1>
-          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-white drop-shadow">{event.title}</h1>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/90 drop-shadow">
             <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {event.date}</span>
             <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> {event.time}</span>
             <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> {event.location}</span>

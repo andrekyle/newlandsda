@@ -28,7 +28,7 @@ function Home() {
           id="home.hero.image"
           defaultSrc={heroImage}
           alt="A lighthouse beneath a starry sky — Thy word is a lamp unto my feet, and a light unto my path. Psalm 119:105"
-          className="block w-full h-auto -mt-[100px]"
+          className="block w-full h-auto -mt-16 sm:-mt-[100px]"
           wrapperClassName="block w-full"
           fetchPriority="high"
         />
@@ -42,7 +42,7 @@ function Home() {
         </div>
         <div className="mx-auto max-w-6xl px-4 py-20">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] whitespace-nowrap">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05]">
               Welcome to{" "}
               <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 Newlands SDA

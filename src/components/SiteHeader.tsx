@@ -90,6 +90,13 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
+          <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-1">
+            <button className="p-2 rounded-none text-foreground hover:bg-muted transition-colors" aria-label="Search">
+              <Search className="h-4 w-4" />
+            </button>
+            <ThemeToggle className="p-2 rounded-none text-foreground hover:bg-muted transition-colors" />
+            <AdminToggle className="p-2 rounded-none text-foreground hover:bg-muted transition-colors" />
+          </div>
         </nav>
       )}
     </header>

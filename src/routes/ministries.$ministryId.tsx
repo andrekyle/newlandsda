@@ -219,7 +219,16 @@ function MinistryDetail() {
                     <div
                       className={`relative aspect-video bg-linear-to-br ${o.gradient} flex items-center justify-center`}
                     >
-                      <OIcon className="h-10 w-10 text-white/90" aria-hidden />
+                      <div className="absolute inset-0">
+                        <EditableImage
+                          id={`ministries.${o.id}.tile.image`}
+                          defaultSrc={TRANSPARENT_PIXEL}
+                          alt=""
+                          className="h-full w-full object-cover"
+                          wrapperClassName="block h-full w-full"
+                        />
+                      </div>
+                      <OIcon className="relative h-10 w-10 text-white/90" aria-hidden />
                     </div>
                     <div className="p-5">
                       <h3 className="text-lg font-semibold tracking-tight">{o.title}</h3>

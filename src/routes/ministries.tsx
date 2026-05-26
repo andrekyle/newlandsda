@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
-import { EditableText } from "@/components/Editable";
+import { EditableText, EditableImage } from "@/components/Editable";
 import { ArrowRight } from "lucide-react";
 import { ministries } from "@/data/ministries";
+
+/** 1×1 transparent PNG — used as the default tile image so the gradient + icon show through until an admin uploads a photo. */
+const TRANSPARENT_PIXEL =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 export const Route = createFileRoute("/ministries")({
   component: Ministries,
@@ -41,7 +45,19 @@ function Ministries() {
                 <div
                   className={`relative aspect-video bg-linear-to-br ${m.gradient} flex items-center justify-center`}
                 >
-                  <Icon className="h-14 w-14 text-white/90" aria-hidden />
+                  {/* Admin-uploadable tile photo — layered above the gradient.
+                      Defaults to transparent so the gradient + icon are visible
+                      until a photo is provided. */}
+                  <div className="absolute inset-0">
+                    <EditableImage
+                      id={`ministries.${m.id}.tile.image`}
+                      defaultSrc={TRANSPARENT_PIXEL}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      wrapperClassName="block h-full w-full"
+                    />
+                  </div>
+                  <Icon className="relative h-14 w-14 text-white/90" aria-hidden />
                 </div>
                 <div className="flex-1 flex flex-col p-6">
                   <h2 className="text-xl font-semibold tracking-tight">

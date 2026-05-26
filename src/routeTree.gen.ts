@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BulletinRouteImport } from './routes/bulletin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MinistriesMinistryIdRouteImport } from './routes/ministries.$ministryId'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 
 const SermonsRoute = SermonsRouteImport.update({
@@ -53,6 +54,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MinistriesMinistryIdRoute = MinistriesMinistryIdRouteImport.update({
+  id: '/$ministryId',
+  path: '/$ministryId',
+  getParentRoute: () => MinistriesRoute,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -65,9 +71,10 @@ export interface FileRoutesByFullPath {
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/sermons': typeof SermonsRoute
   '/events/$eventId': typeof EventsEventIdRoute
+  '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +82,10 @@ export interface FileRoutesByTo {
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/sermons': typeof SermonsRoute
   '/events/$eventId': typeof EventsEventIdRoute
+  '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,9 +94,10 @@ export interface FileRoutesById {
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/sermons': typeof SermonsRoute
   '/events/$eventId': typeof EventsEventIdRoute
+  '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/events/$eventId'
+    | '/ministries/$ministryId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/events/$eventId'
+    | '/ministries/$ministryId'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/ministries'
     | '/sermons'
     | '/events/$eventId'
+    | '/ministries/$ministryId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,7 +141,7 @@ export interface RootRouteChildren {
   BulletinRoute: typeof BulletinRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRouteWithChildren
-  MinistriesRoute: typeof MinistriesRoute
+  MinistriesRoute: typeof MinistriesRouteWithChildren
   SermonsRoute: typeof SermonsRoute
 }
 
@@ -184,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ministries/$ministryId': {
+      id: '/ministries/$ministryId'
+      path: '/$ministryId'
+      fullPath: '/ministries/$ministryId'
+      preLoaderRoute: typeof MinistriesMinistryIdRouteImport
+      parentRoute: typeof MinistriesRoute
+    }
     '/events/$eventId': {
       id: '/events/$eventId'
       path: '/$eventId'
@@ -205,13 +224,25 @@ const EventsRouteChildren: EventsRouteChildren = {
 const EventsRouteWithChildren =
   EventsRoute._addFileChildren(EventsRouteChildren)
 
+interface MinistriesRouteChildren {
+  MinistriesMinistryIdRoute: typeof MinistriesMinistryIdRoute
+}
+
+const MinistriesRouteChildren: MinistriesRouteChildren = {
+  MinistriesMinistryIdRoute: MinistriesMinistryIdRoute,
+}
+
+const MinistriesRouteWithChildren = MinistriesRoute._addFileChildren(
+  MinistriesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BulletinRoute: BulletinRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRouteWithChildren,
-  MinistriesRoute: MinistriesRoute,
+  MinistriesRoute: MinistriesRouteWithChildren,
   SermonsRoute: SermonsRoute,
 }
 export const routeTree = rootRouteImport

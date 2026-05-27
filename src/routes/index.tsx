@@ -42,10 +42,10 @@ function Home() {
           wrapperClassName="hidden sm:block w-full"
           fetchPriority="high"
         />
-        <div className="flex justify-center pb-8 pt-4 sm:pb-12 sm:pt-6">
+        <div className="pointer-events-none absolute inset-x-0 bottom-6 sm:bottom-10 flex justify-center">
           <Link
             to="/ministries"
-            className="inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
+            className="pointer-events-auto inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg ring-1 ring-black/10 transition-colors hover:bg-primary/90"
           >
             Our Ministries
           </Link>

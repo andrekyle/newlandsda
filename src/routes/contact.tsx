@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { EditableText } from "@/components/Editable";
+import { ministries } from "@/data/ministries";
 import contactBanner from "@/assets/contact.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -93,6 +94,25 @@ function Contact() {
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Email</label>
             <input required type="email" className="w-full border border-border/50 bg-[#141414] text-neutral-100 placeholder:text-neutral-500 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5 text-foreground">Department / leader to contact</label>
+            <select
+              name="department"
+              defaultValue="general"
+              className="w-full border border-border/50 bg-[#141414] text-neutral-100 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+            >
+              <option value="general">General enquiry (church office)</option>
+              <option value="pastor">Pastor</option>
+              {ministries.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.title} — leader
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Each ministry page also lists the leader’s direct email, cell and WhatsApp.
+            </p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Message</label>

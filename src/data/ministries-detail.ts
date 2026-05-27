@@ -14,6 +14,9 @@ export type MinistryTeamMember = {
   role: string;
   bio: string;
   image: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
 };
 
 export type MinistryEvent = {
@@ -39,6 +42,9 @@ const blankPerson = (role: string): MinistryTeamMember => ({
   role,
   bio: "Add a short bio here.",
   image: "",
+  email: "",
+  phone: "",
+  whatsapp: "",
 });
 
 export const ministryDetails: Record<string, MinistryDetail> = {

@@ -105,38 +105,63 @@ export function EditableImage({
       alert("Image is larger than 10 MB \u2014 please pick a smaller file.");
       return;
     }
-    // Downscale via canvas so the resulting data URL fits in localStorage
-    // (~5 MB quota). Without this, large originals appear to save but get
-    // dropped on the next page load.
-    const MAX_EDGE = 1600;
-    const QUALITY = 0.85;
+    // Downscale + recompress via canvas so the resulting data URL:
+    //   1. Fits in localStorage (~5 MB browser quota).
+    //   2. Fits under the shared-site publish per-entry cap (~200 KB) so
+    //      the picture is actually pushed to every visitor's browser, not
+    //      just the editor's. Anything over that cap is stripped from the
+    //      shared payload in admin.tsx and stays local-only.
+    //
+    // We try a sequence of (max-edge, quality) presets and pick the first
+    // result under TARGET_BYTES. If nothing fits, we use the smallest
+    // produced output.
+    const TARGET_BYTES = 180 * 1024;
+    const PRESETS: Array<{ maxEdge: number; quality: number }> = [
+      { maxEdge: 1600, quality: 0.85 },
+      { maxEdge: 1400, quality: 0.78 },
+      { maxEdge: 1200, quality: 0.7 },
+      { maxEdge: 1000, quality: 0.62 },
+      { maxEdge: 900, quality: 0.55 },
+      { maxEdge: 800, quality: 0.5 },
+      { maxEdge: 700, quality: 0.45 },
+    ];
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = typeof reader.result === "string" ? reader.result : "";
       if (!dataUrl) return;
       const img = new Image();
       img.onload = () => {
-        let { width: w, height: h } = img;
-        const scale = Math.min(1, MAX_EDGE / Math.max(w, h));
-        w = Math.round(w * scale);
-        h = Math.round(h * scale);
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
+        const isPng = file.type === "image/png";
+        // Only keep PNG output for tiny transparent assets (logos / icons).
+        // Everything else gets recompressed to JPEG for size.
+        if (isPng && file.size < 120 * 1024) {
           setSrc(dataUrl);
           return;
         }
-        ctx.drawImage(img, 0, 0, w, h);
-        const isPng = file.type === "image/png";
-        // Keep PNG only for small transparent assets (logos); compress to JPEG
-        // otherwise to stay under the storage quota.
-        const out =
-          isPng && file.size < 200 * 1024
-            ? canvas.toDataURL("image/png")
-            : canvas.toDataURL("image/jpeg", QUALITY);
-        setSrc(out);
+        const encode = (maxEdge: number, quality: number) => {
+          let { width: w, height: h } = img;
+          const scale = Math.min(1, maxEdge / Math.max(w, h));
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return null;
+          ctx.drawImage(img, 0, 0, w, h);
+          return canvas.toDataURL("image/jpeg", quality);
+        };
+        let best: string | null = null;
+        for (const { maxEdge, quality } of PRESETS) {
+          const out = encode(maxEdge, quality);
+          if (!out) continue;
+          if (!best || out.length < best.length) best = out;
+          if (out.length <= TARGET_BYTES) {
+            setSrc(out);
+            return;
+          }
+        }
+        setSrc(best ?? dataUrl);
       };
       img.onerror = () => setSrc(dataUrl);
       img.src = dataUrl;

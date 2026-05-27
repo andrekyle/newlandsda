@@ -88,15 +88,15 @@ function Contact() {
           <h2 className="text-2xl font-semibold tracking-tight">Send a Message</h2>
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Name</label>
-            <input required className="w-full border border-border/50 bg-background px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+            <input required className="w-full border border-border/50 bg-[#ebebeb] text-neutral-900 placeholder:text-neutral-500 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Email</label>
-            <input required type="email" className="w-full border border-border/50 bg-background px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+            <input required type="email" className="w-full border border-border/50 bg-[#ebebeb] text-neutral-900 placeholder:text-neutral-500 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Message</label>
-            <textarea required rows={5} className="w-full border border-border/50 bg-background px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+            <textarea required rows={5} className="w-full border border-border/50 bg-[#ebebeb] text-neutral-900 placeholder:text-neutral-500 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
           </div>
           <button type="submit" className="bg-primary text-primary-foreground px-6 py-3 font-medium rounded-none text-sm hover:opacity-90 transition-opacity">
             Send Message

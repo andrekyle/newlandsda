@@ -6,8 +6,8 @@ import { Calendar, BookOpen, Users, Heart, ArrowRight, MapPin, Clock, Sun, Moon 
 import congregation from "@/assets/congregation.jpg";
 import bible from "@/assets/bible.jpg";
 import children from "@/assets/children.jpg";
-import heroImage from "@/assets/hero.png";
-import heroMobileImage from "@/assets/heroMobile.png";
+import heroImage from "@/assets/hero.jpg";
+import heroMobileImage from "@/assets/heroMobile.jpg";
 
 export const Route = createFileRoute("/")({
   component: Home,

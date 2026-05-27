@@ -1,7 +1,7 @@
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { EditableImage, EditableText } from "./Editable";
-import defaultBanner from "@/assets/default-banner.png";
+import defaultBanner from "@/assets/default-banner.jpg";
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
@@ -56,6 +56,8 @@ export function PageHero({
           alt={title}
           className="block w-full h-auto"
           wrapperClassName="block w-full"
+          loading="eager"
+          fetchPriority="high"
         />
       </section>
     );
@@ -70,6 +72,8 @@ export function PageHero({
           alt=""
           className="h-full w-full object-cover opacity-70"
           wrapperClassName="block h-full w-full"
+          loading="eager"
+          fetchPriority="high"
         />
         {/* Dark scrim for legible text in both light and dark modes */}
         <div aria-hidden className="absolute inset-0 bg-black/25" />

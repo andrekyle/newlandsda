@@ -13,18 +13,18 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
-import adventurersBanner from "@/assets/adventurers.png";
-import communicationBanner from "@/assets/communication.png";
-import familyLifeBanner from "@/assets/family-life.png";
-import healthBanner from "@/assets/health.png";
-import mensMinistryBanner from "@/assets/mens-ministry.png";
-import pathfindersBanner from "@/assets/pathfinders.png";
-import personalMinistryBanner from "@/assets/personal-ministry.png";
-import sabbathSchoolBanner from "@/assets/sabbath-school.png";
-import stewardshipBanner from "@/assets/stewardship.png";
-import treasuryBanner from "@/assets/treasury.png";
-import womensMinistriesBanner from "@/assets/womens-ministries.png";
-import youthBanner from "@/assets/youth.png";
+import adventurersBanner from "@/assets/adventurers.jpg";
+import communicationBanner from "@/assets/communication.jpg";
+import familyLifeBanner from "@/assets/family-life.jpg";
+import healthBanner from "@/assets/health.jpg";
+import mensMinistryBanner from "@/assets/mens-ministry.jpg";
+import pathfindersBanner from "@/assets/pathfinders.jpg";
+import personalMinistryBanner from "@/assets/personal-ministry.jpg";
+import sabbathSchoolBanner from "@/assets/sabbath-school.jpg";
+import stewardshipBanner from "@/assets/stewardship.jpg";
+import treasuryBanner from "@/assets/treasury.jpg";
+import womensMinistriesBanner from "@/assets/womens-ministries.jpg";
+import youthBanner from "@/assets/youth.jpg";
 
 export type Ministry = {
   id: string;

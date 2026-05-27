@@ -177,7 +177,8 @@ export function EditableImage({
         className={className}
         width={width}
         height={height}
-        loading={loading}
+        loading={loading ?? "lazy"}
+        decoding="async"
         // @ts-expect-error: fetchPriority is a valid HTML attribute
         fetchPriority={fetchPriority}
       />
@@ -217,7 +218,8 @@ export function EditableImage({
         className={className}
         width={width}
         height={height}
-        loading={loading}
+        loading={loading ?? "lazy"}
+        decoding="async"
         // @ts-expect-error: fetchPriority is a valid HTML attribute
         fetchPriority={fetchPriority}
       />

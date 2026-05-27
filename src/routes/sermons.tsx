@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { EditableText } from "@/components/Editable";
 import { useAdmin, useOverride } from "@/lib/admin";
 import { sermons as staticSermons, type Sermon } from "@/data/sermons";
-import sermonsBanner from "@/assets/sermons.png";
+import sermonsBanner from "@/assets/sermons.jpg";
 
 const CHANNEL_URL = "https://www.youtube.com/@JoburgNorthSDA";
 

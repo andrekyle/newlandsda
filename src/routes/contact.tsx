@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { EditableText } from "@/components/Editable";
-import contactBanner from "@/assets/contact.png";
+import contactBanner from "@/assets/contact.jpg";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,

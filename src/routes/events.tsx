@@ -5,7 +5,7 @@ import { EditableText } from "@/components/Editable";
 import { Calendar, MapPin, ArrowRight, Plus, Trash2 } from "lucide-react";
 import { events, type ChurchEvent } from "@/data/events";
 import { useAdmin, useOverride } from "@/lib/admin";
-import eventsBanner from "@/assets/events.png";
+import eventsBanner from "@/assets/events.jpg";
 import {
   AlertDialog,
   AlertDialogAction,

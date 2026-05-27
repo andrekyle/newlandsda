@@ -60,7 +60,7 @@ export function MinistryTileVisual({
   if (hasImage) {
     return (
       <div className="relative w-full bg-muted overflow-hidden">
-        <img src={src} alt="" className="block w-full h-auto" />
+        <img src={src} alt="" className="block w-full h-auto" loading="lazy" decoding="async" />
       </div>
     );
   }

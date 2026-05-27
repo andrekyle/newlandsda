@@ -14,8 +14,10 @@ import {
   Star,
   GraduationCap,
   HandHeart,
+  Droplets,
 } from "lucide-react";
 import adventurersBanner from "@/assets/adventurers.jpg";
+import baptismClassBanner from "@/assets/baptismClass.jpg";
 import communicationBanner from "@/assets/communication.jpg";
 import familyLifeBanner from "@/assets/family-life.jpg";
 import healthBanner from "@/assets/health.jpg";
@@ -77,7 +79,32 @@ export const ministries: Ministry[] = [
     bannerImage: adventurersBanner,
   },
   {
-    id: "communication",
+    id: "baptism-classes",
+    title: "Baptism Classes",
+    tagline: "Preparing hearts to publicly follow Jesus through baptism.",
+    short:
+      "A guided journey of Bible study through the 28 Fundamental Beliefs, leading to a personal decision to accept Jesus Christ as Lord and Saviour and baptism in our Newlands sanctuary.",
+    icon: Droplets,
+    gradient: "from-cyan-700 to-blue-900",
+    leader: "Baptism Class Coordinator / Pastor",
+    meets: "Weekly classes · ongoing intake",
+    location: "Newlands SDA sanctuary & fellowship room",
+    description: [
+      "Our Baptism Classes are a step-by-step Bible journey for anyone who is exploring faith in Jesus or preparing to publicly follow Him through baptism by immersion.",
+      "Over a series of weekly studies, candidates work through the Seventh-day Adventist 28 Fundamental Beliefs — the great themes of Scripture: God, Salvation, the Sabbath, the Second Coming, the Sanctuary, the Spirit of Prophecy, healthful living, and life in Christ.",
+      "The classes are equally for new believers preparing for baptism and for long-time members who want to re-study what we believe. The heart of the journey is not information but a personal decision: to accept Jesus Christ as Lord and Saviour and follow Him for life.",
+      "Candidates who choose to be baptised are then baptised by immersion in the baptismal font in our Newlands SDA sanctuary — publicly testifying to a new life in Christ and joining the worldwide family of the Seventh-day Adventist Church.",
+    ],
+    activities: [
+      "Weekly Bible-study classes on the 28 Fundamental Beliefs",
+      "Personal study guides, devotionals & memory verses",
+      "One-to-one pastoral mentoring & prayer",
+      "Profession of faith & baptismal vows",
+      "Baptism by immersion in the Newlands sanctuary",
+    ],
+    bannerImage: baptismClassBanner,
+  },
+  {
     title: "Communication",
     tagline: "Sharing the message of hope and salvation.",
     short:

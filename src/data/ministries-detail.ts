@@ -66,6 +66,24 @@ export const ministryDetails: Record<string, MinistryDetail> = {
     ],
   },
 
+  "baptism-classes": {
+    team: [
+      { ...blankPerson("Pastor / Baptism Class Teacher"), bio: "Leads candidates through the 28 Fundamental Beliefs, conducts personal interviews, receives the baptismal vows and performs the baptism in the Newlands sanctuary." },
+      { ...blankPerson("Bible Instructor"), bio: "Walks with each candidate week-by-week through the Bible studies \u2014 answering questions, reviewing memory verses and praying personally." },
+      { ...blankPerson("Mentor / Baptism Buddy"), bio: "Pairs with a candidate as a friend and prayer partner from the first class through baptism and into church family life." },
+    ],
+    events: [
+      { name: "Baptism Class Intake Sabbath", date: "Quarterly", description: "Open invitation for anyone wanting to study the Bible, learn what Adventists believe, or prepare for baptism \u2014 cards available after the service." },
+      { name: "Baptismal Vows & Profession of Faith", date: "On baptism Sabbath", description: "Candidates publicly affirm their faith in Jesus and acceptance of the Adventist 28 Fundamentals before the congregation." },
+      { name: "Baptism Sabbath", date: "Several times per year", description: "Baptism by immersion in the Newlands SDA baptismal font, followed by the right hand of fellowship and a celebration meal." },
+    ],
+    fundraising: [
+      { title: "Bible-Study Resources", description: "Bibles, study guides and copies of the 28 Fundamental Beliefs book for every candidate to keep \u2014 free of charge.", goal: "" },
+      { title: "Baptismal Robes & Supplies", description: "Maintain and replace baptismal robes, towels and font supplies so every candidate is welcomed with dignity.", goal: "" },
+      { title: "New-Member Welcome Pack", description: "A Bible, devotional, study book and church year-planner gifted to each newly-baptised member on their first Sabbath as a member.", goal: "" },
+    ],
+  },
+
   pathfinders: {
     team: [
       { ...blankPerson("Pathfinder Director"), bio: "Plans and oversees all club operations, manages the staff team, and ensures quality spiritual and physical programming. Holds Director Certification." },

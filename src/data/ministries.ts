@@ -318,6 +318,33 @@ export const ministries: Ministry[] = [
     bannerImage: voiceOfProphecyBanner,
   },
   {
+    id: "welfare",
+    title: "Welfare",
+    tagline: "Serving Newlands and surrounding communities in the name of Jesus.",
+    short:
+      "Adventist Community Services in action — home visits, soup kitchens, food parcels and prayer with our neighbours across Newlands, Johannesburg and surrounding communities.",
+    icon: HandHeart,
+    gradient: "from-amber-700 to-red-900",
+    leader: "Welfare / Community Services Director",
+    meets: "Weekly outreach · monthly planning",
+    location: "Church grounds & in the community",
+    description: [
+      "The Welfare Ministry of Newlands SDA — part of the worldwide Adventist Community Services / Dorcas tradition — exists to meet the physical, emotional and spiritual needs of our neighbours with Christ-like compassion.",
+      "We serve Newlands in Johannesburg and the surrounding communities through regular house visits to the sick, elderly, bereaved and shut-in; through a soup kitchen and food-parcel distribution; and through clothing drives and practical help wherever it is needed.",
+      "At the heart of every act of service is prayer — we pray with and for the families we visit, knowing that real change begins when needs are met in Jesus' name.",
+      "Every member is welcome to serve. Whether you can cook, drive, visit, donate or pray, there is a place for you on the welfare team.",
+    ],
+    activities: [
+      "Soup kitchen & weekly hot meals",
+      "Food-parcel & grocery distribution",
+      "Home visits — sick, elderly, bereaved & shut-in",
+      "Clothing, blanket & winter drives",
+      "Prayer with and for our community",
+    ],
+    bannerImage: welfareBanner,
+  },
+  {
+    id: "womens-ministries",
     title: "Women's Ministries",
     tagline: "A Christ-centred community for the women of our church.",
     short:

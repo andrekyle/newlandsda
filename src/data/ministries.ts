@@ -11,7 +11,9 @@ import {
   Coins,
   Flower,
   Sparkles,
+  Star,
 } from "lucide-react";
+import adventurersBanner from "@/assets/adventurers.png";
 import communicationBanner from "@/assets/communication.png";
 import familyLifeBanner from "@/assets/family-life.png";
 import healthBanner from "@/assets/health.png";
@@ -46,6 +48,30 @@ export type Ministry = {
 };
 
 export const ministries: Ministry[] = [
+  {
+    id: "adventurers",
+    title: "Adventurers",
+    tagline: "A fun, Christ-centred club for children ages 4–9.",
+    short:
+      "A Christ-centred club for children ages 4–9 — helping little ones grow in Jesus through learning, play, and adventure.",
+    icon: Star,
+    gradient: "from-sky-600 to-indigo-800",
+    leader: "Adventurer Director",
+    meets: "Sabbath afternoons",
+    location: "Adventurer room",
+    description: [
+      "The Adventurer Club of Newlands SDA is a Christ-centred ministry for children ages 4–9 and their parents.",
+      "Through age-appropriate Bible lessons, crafts, awards, songs, games and outdoor activities, our Adventurers learn to love Jesus, care for their families, and discover God's world.",
+      "Parents are welcomed alongside their children — making Adventurers a place where the whole family grows together in faith.",
+    ],
+    activities: [
+      "Weekly club meetings",
+      "Awards & adventure badges",
+      "Family fun days & outings",
+      "Children's Sabbath programs",
+    ],
+    bannerImage: adventurersBanner,
+  },
   {
     id: "communication",
     title: "Communication",

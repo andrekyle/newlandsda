@@ -114,29 +114,26 @@ function BulletinPage() {
 
   return (
     <PageShell>
-      {/* Hero */}
+      {/* Hero — image-only banner; the designed art already includes the
+          "Weekly Bulletin" title and tagline, so we don't overlay text on it. */}
       <section className="relative bg-card overflow-hidden">
-        <div className="absolute inset-0">
-          <EditableImage
-            id="pagehero.bulletin.image"
-            defaultSrc={bannerDefault}
-            alt=""
-            className="h-full w-full object-cover opacity-70"
-            wrapperClassName="block h-full w-full"
-          />
-          <div aria-hidden className="absolute inset-0 bg-black/40" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-4 py-24">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-4 text-white/80">
-              <CalendarDays className="h-5 w-5" />
-              <span className="text-lg font-medium">{bulletin.label}</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-2">
-              Weekly Bulletin
-            </h1>
-            <p className="text-lg text-white/80">{bulletin.subtitle}</p>
+        <EditableImage
+          id="pagehero.bulletin.image"
+          defaultSrc={bannerDefault}
+          alt="Weekly Bulletin"
+          className="block w-full h-auto"
+          wrapperClassName="block w-full"
+        />
+      </section>
+
+      {/* Date / subtitle bar — keeps the per-week info visible and editable. */}
+      <section className="bg-card border-b border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2 text-foreground">
+            <CalendarDays className="h-5 w-5 text-primary" />
+            <span className="text-lg font-medium">{bulletin.label}</span>
           </div>
+          <p className="text-base text-muted-foreground sm:text-right">{bulletin.subtitle}</p>
         </div>
       </section>
 

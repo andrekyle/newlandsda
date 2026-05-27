@@ -1,8 +1,20 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/PageShell";
-import { EditableText } from "@/components/Editable";
-import { ArrowLeft, ArrowRight, Users, Clock, MapPin } from "lucide-react";
+import {
+  EditableText,
+  EditableList,
+  ListField,
+  ListTextarea,
+  ListImage,
+} from "@/components/Editable";
+import { ArrowLeft, ArrowRight, Users, Clock, MapPin, Calendar, HeartHandshake } from "lucide-react";
 import { getMinistry, ministries } from "@/data/ministries";
+import { getMinistryDetail } from "@/data/ministries-detail";
+import type {
+  MinistryTeamMember,
+  MinistryEvent,
+  MinistryFundraiser,
+} from "@/data/ministries-detail";
 import { MinistryTileVisual } from "./ministries";
 
 export const Route = createFileRoute("/ministries/$ministryId")({
@@ -69,6 +81,7 @@ function MinistryDetail() {
   const m = ministry;
   const Icon = m.icon;
   const others = ministries.filter((x) => x.id !== m.id).slice(0, 3);
+  const detail = getMinistryDetail(m.id) ?? { team: [], events: [], fundraising: [] };
 
   return (
     <PageShell>
@@ -195,6 +208,179 @@ function MinistryDetail() {
             </Link>
           </div>
         </aside>
+      </section>
+
+      {/* Leadership team */}
+      <section className="border-t border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="flex items-center gap-3 mb-2">
+            <Users className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-semibold tracking-tight">Leadership team</h2>
+          </div>
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Meet the people serving in this ministry. In edit mode you can update each
+            profile or add new team members.
+          </p>
+          <EditableList<MinistryTeamMember>
+            id={`ministries.${m.id}.team`}
+            defaultValue={detail.team}
+            newItem={() => ({
+              name: "New member",
+              role: "Role",
+              bio: "Short bio.",
+              image: "",
+            })}
+            addLabel="Add team member"
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            itemClassName="bg-card border border-border/50 rounded-sm overflow-hidden flex flex-col"
+            renderItem={(item, { update, editMode, index }) => (
+              <>
+                <ListImage
+                  value={item.image}
+                  onChange={(v) => update({ image: v })}
+                  editMode={editMode}
+                  alt={item.name}
+                  className="aspect-4/5 w-full"
+                  uploadId={`ministries.${m.id}.team.${index}.image`}
+                />
+                <div className="p-5 flex-1 flex flex-col gap-2">
+                  <ListField
+                    value={item.name}
+                    onChange={(v) => update({ name: v })}
+                    editMode={editMode}
+                    className="text-lg font-semibold tracking-tight"
+                    placeholder="Full name"
+                  />
+                  <ListField
+                    value={item.role}
+                    onChange={(v) => update({ role: v })}
+                    editMode={editMode}
+                    className="text-sm text-primary font-medium"
+                    placeholder="Role"
+                  />
+                  <ListTextarea
+                    value={item.bio}
+                    onChange={(v) => update({ bio: v })}
+                    editMode={editMode}
+                    className="text-sm text-muted-foreground leading-relaxed"
+                    placeholder="Short bio"
+                  />
+                </div>
+              </>
+            )}
+          />
+        </div>
+      </section>
+
+      {/* Upcoming events */}
+      <section className="bg-card border-t border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="flex items-center gap-3 mb-2">
+            <Calendar className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-semibold tracking-tight">Upcoming events</h2>
+          </div>
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Mark your calendar for our regular gatherings and special events.
+          </p>
+          <EditableList<MinistryEvent>
+            id={`ministries.${m.id}.events`}
+            defaultValue={detail.events}
+            newItem={() => ({
+              name: "New event",
+              date: "TBD",
+              description: "What this event is about.",
+            })}
+            addLabel="Add event"
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+            itemClassName="bg-background border border-border/50 rounded-sm p-5 flex flex-col gap-2"
+            renderItem={(item, { update, editMode }) => (
+              <>
+                <ListField
+                  value={item.name}
+                  onChange={(v) => update({ name: v })}
+                  editMode={editMode}
+                  className="text-lg font-semibold tracking-tight"
+                  placeholder="Event title"
+                />
+                <ListField
+                  value={item.date}
+                  onChange={(v) => update({ date: v })}
+                  editMode={editMode}
+                  className="text-sm text-primary font-medium"
+                  placeholder="Date / frequency"
+                />
+                <ListTextarea
+                  value={item.description}
+                  onChange={(v) => update({ description: v })}
+                  editMode={editMode}
+                  className="text-sm text-muted-foreground leading-relaxed"
+                  placeholder="Description"
+                />
+              </>
+            )}
+          />
+        </div>
+      </section>
+
+      {/* Fundraising */}
+      <section className="border-t border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="flex items-center gap-3 mb-2">
+            <HeartHandshake className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-semibold tracking-tight">Fundraising &amp; giving</h2>
+          </div>
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Partner with this ministry through prayer and giving. Every contribution
+            advances our shared mission.
+          </p>
+          <EditableList<MinistryFundraiser>
+            id={`ministries.${m.id}.fundraising`}
+            defaultValue={detail.fundraising}
+            newItem={() => ({
+              title: "New project",
+              description: "What the gift supports.",
+              goal: "",
+            })}
+            addLabel="Add fundraiser"
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+            itemClassName="bg-card border border-border/50 rounded-sm p-5 flex flex-col gap-2"
+            renderItem={(item, { update, editMode }) => (
+              <>
+                <ListField
+                  value={item.title}
+                  onChange={(v) => update({ title: v })}
+                  editMode={editMode}
+                  className="text-lg font-semibold tracking-tight"
+                  placeholder="Project title"
+                />
+                {(editMode || item.goal) && (
+                  <ListField
+                    value={item.goal}
+                    onChange={(v) => update({ goal: v })}
+                    editMode={editMode}
+                    className="text-sm text-primary font-medium"
+                    placeholder="Goal (optional)"
+                  />
+                )}
+                <ListTextarea
+                  value={item.description}
+                  onChange={(v) => update({ description: v })}
+                  editMode={editMode}
+                  className="text-sm text-muted-foreground leading-relaxed"
+                  placeholder="Description"
+                />
+              </>
+            )}
+          />
+          <div className="mt-10">
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 font-medium rounded-none text-sm hover:opacity-90 transition-opacity"
+            >
+              Give to this ministry <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Other ministries */}

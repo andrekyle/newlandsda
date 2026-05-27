@@ -301,47 +301,47 @@ function MinistryDetail() {
                     </div>
                   ) : (
                     <div className="mt-3 pt-3 border-t border-border/40">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-foreground/70 mb-2">
-                        Contact
-                      </div>
                       {item.email || item.phone || item.whatsapp ? (
-                        <ul className="space-y-1.5 text-sm">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-foreground/70">
+                            Contact
+                          </span>
                           {item.email && (
-                            <li>
-                              <a
-                                href={`mailto:${item.email}`}
-                                className="inline-flex items-center gap-2 text-primary hover:underline break-all"
-                              >
-                                <Mail className="h-4 w-4 shrink-0" /> {item.email}
-                              </a>
-                            </li>
+                            <a
+                              href={`mailto:${item.email}`}
+                              title={item.email}
+                              className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                            >
+                              <Mail className="h-4 w-4 shrink-0" /> Email
+                            </a>
                           )}
                           {item.phone && (
-                            <li>
-                              <a
-                                href={`tel:${item.phone.replace(/\s+/g, "")}`}
-                                className="inline-flex items-center gap-2 text-primary hover:underline"
-                              >
-                                <Phone className="h-4 w-4 shrink-0" /> {item.phone}
-                              </a>
-                            </li>
+                            <a
+                              href={`tel:${item.phone.replace(/\s+/g, "")}`}
+                              title={item.phone}
+                              className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                            >
+                              <Phone className="h-4 w-4 shrink-0" /> Call
+                            </a>
                           )}
                           {item.whatsapp && (
-                            <li>
-                              <a
-                                href={`https://wa.me/${item.whatsapp.replace(/[^\d]/g, "")}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 text-primary hover:underline"
-                              >
-                                <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp
-                              </a>
-                            </li>
+                            <a
+                              href={`https://wa.me/${item.whatsapp.replace(/[^\d]/g, "")}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              title={item.whatsapp}
+                              className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                            >
+                              <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp
+                            </a>
                           )}
-                        </ul>
+                        </div>
                       ) : (
                         <p className="text-xs text-muted-foreground italic">
-                          Contact details coming soon.
+                          <span className="font-semibold uppercase tracking-wider text-foreground/70 not-italic">
+                            Contact:
+                          </span>{" "}
+                          coming soon.
                         </p>
                       )}
                     </div>

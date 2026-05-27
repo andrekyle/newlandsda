@@ -300,7 +300,7 @@ function MinistryDetail() {
                       </label>
                     </div>
                   ) : (
-                    <div className="mt-3 pt-3 border-t border-border/40">
+                    <div className="mt-auto pt-3 border-t border-border/40">
                       {item.email || item.phone || item.whatsapp ? (
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                           <span className="text-xs font-semibold uppercase tracking-wider text-foreground/70">

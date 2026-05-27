@@ -6,7 +6,7 @@ import { getEvent, events, type ChurchEvent } from "@/data/events";
 import { useOverride } from "@/lib/admin";
 import bannerDefault from "@/assets/default-banner.jpg";
 
-export const Route = createFileRoute("/events/$eventId")({
+export const Route = createFileRoute("/events_/$eventId")({
   component: EventDetail,
   loader: ({ params }) => {
     // Don't throw notFound() here — user-added events live in localStorage

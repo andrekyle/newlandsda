@@ -16,8 +16,8 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BulletinRouteImport } from './routes/bulletin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MinistriesMinistryIdRouteImport } from './routes/ministries.$ministryId'
-import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
+import { Route as MinistriesMinistryIdRouteImport } from './routes/ministries_.$ministryId'
+import { Route as EventsEventIdRouteImport } from './routes/events_.$eventId'
 
 const SermonsRoute = SermonsRouteImport.update({
   id: '/sermons',
@@ -55,14 +55,14 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinistriesMinistryIdRoute = MinistriesMinistryIdRouteImport.update({
-  id: '/$ministryId',
-  path: '/$ministryId',
-  getParentRoute: () => MinistriesRoute,
+  id: '/ministries_/$ministryId',
+  path: '/ministries/$ministryId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
-  id: '/$eventId',
-  path: '/$eventId',
-  getParentRoute: () => EventsRoute,
+  id: '/events_/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -70,8 +70,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRouteWithChildren
+  '/events': typeof EventsRoute
+  '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
@@ -81,8 +81,8 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRouteWithChildren
+  '/events': typeof EventsRoute
+  '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
@@ -93,11 +93,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/bulletin': typeof BulletinRoute
   '/contact': typeof ContactRoute
-  '/events': typeof EventsRouteWithChildren
-  '/ministries': typeof MinistriesRouteWithChildren
+  '/events': typeof EventsRoute
+  '/ministries': typeof MinistriesRoute
   '/sermons': typeof SermonsRoute
-  '/events/$eventId': typeof EventsEventIdRoute
-  '/ministries/$ministryId': typeof MinistriesMinistryIdRoute
+  '/events_/$eventId': typeof EventsEventIdRoute
+  '/ministries_/$ministryId': typeof MinistriesMinistryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,8 +131,8 @@ export interface FileRouteTypes {
     | '/events'
     | '/ministries'
     | '/sermons'
-    | '/events/$eventId'
-    | '/ministries/$ministryId'
+    | '/events_/$eventId'
+    | '/ministries_/$ministryId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,9 +140,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BulletinRoute: typeof BulletinRoute
   ContactRoute: typeof ContactRoute
-  EventsRoute: typeof EventsRouteWithChildren
-  MinistriesRoute: typeof MinistriesRouteWithChildren
+  EventsRoute: typeof EventsRoute
+  MinistriesRoute: typeof MinistriesRoute
   SermonsRoute: typeof SermonsRoute
+  EventsEventIdRoute: typeof EventsEventIdRoute
+  MinistriesMinistryIdRoute: typeof MinistriesMinistryIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -196,54 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ministries/$ministryId': {
-      id: '/ministries/$ministryId'
-      path: '/$ministryId'
+    '/ministries_/$ministryId': {
+      id: '/ministries_/$ministryId'
+      path: '/ministries/$ministryId'
       fullPath: '/ministries/$ministryId'
       preLoaderRoute: typeof MinistriesMinistryIdRouteImport
-      parentRoute: typeof MinistriesRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/events/$eventId': {
-      id: '/events/$eventId'
-      path: '/$eventId'
+    '/events_/$eventId': {
+      id: '/events_/$eventId'
+      path: '/events/$eventId'
       fullPath: '/events/$eventId'
       preLoaderRoute: typeof EventsEventIdRouteImport
-      parentRoute: typeof EventsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface EventsRouteChildren {
-  EventsEventIdRoute: typeof EventsEventIdRoute
-}
-
-const EventsRouteChildren: EventsRouteChildren = {
-  EventsEventIdRoute: EventsEventIdRoute,
-}
-
-const EventsRouteWithChildren =
-  EventsRoute._addFileChildren(EventsRouteChildren)
-
-interface MinistriesRouteChildren {
-  MinistriesMinistryIdRoute: typeof MinistriesMinistryIdRoute
-}
-
-const MinistriesRouteChildren: MinistriesRouteChildren = {
-  MinistriesMinistryIdRoute: MinistriesMinistryIdRoute,
-}
-
-const MinistriesRouteWithChildren = MinistriesRoute._addFileChildren(
-  MinistriesRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BulletinRoute: BulletinRoute,
   ContactRoute: ContactRoute,
-  EventsRoute: EventsRouteWithChildren,
-  MinistriesRoute: MinistriesRouteWithChildren,
+  EventsRoute: EventsRoute,
+  MinistriesRoute: MinistriesRoute,
   SermonsRoute: SermonsRoute,
+  EventsEventIdRoute: EventsEventIdRoute,
+  MinistriesMinistryIdRoute: MinistriesMinistryIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

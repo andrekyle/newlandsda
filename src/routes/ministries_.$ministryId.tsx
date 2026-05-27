@@ -17,7 +17,7 @@ import type {
 } from "@/data/ministries-detail";
 import { MinistryTileVisual } from "./ministries";
 
-export const Route = createFileRoute("/ministries/$ministryId")({
+export const Route = createFileRoute("/ministries_/$ministryId")({
   component: MinistryDetail,
   loader: ({ params }) => ({
     ministryId: params.ministryId,

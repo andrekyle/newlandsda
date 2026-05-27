@@ -42,6 +42,14 @@ function Home() {
           wrapperClassName="hidden sm:block w-full"
           fetchPriority="high"
         />
+        <div className="flex justify-center pb-8 pt-4 sm:pb-12 sm:pt-6">
+          <Link
+            to="/ministries"
+            className="inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
+          >
+            Our Ministries
+          </Link>
+        </div>
       </section>
 
       {/* Welcome + quick info */}

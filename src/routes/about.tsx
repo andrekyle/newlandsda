@@ -3,6 +3,7 @@ import { PageShell, PageHero } from "@/components/PageShell";
 import { EditableImage, EditableText } from "@/components/Editable";
 import { Mail, Phone } from "lucide-react";
 import aboutBanner from "@/assets/about.png";
+import jacoImage from "@/assets/jaco.jpeg";
 
 export const Route = createFileRoute("/about")({
   component: About,
@@ -146,6 +147,7 @@ const leaders: Array<{
     bio: "Shepherding our congregation through Christ-centered preaching and pastoral care. Committed to discipleship, family ministry, and equipping believers for service.",
     phone: "+27 83 216 3306",
     email: "pastor@newlandssda.org",
+    image: jacoImage,
   },
   {
     role: "Head Elder",

@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageShell, PageHero } from "@/components/PageShell";
+import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { useAdmin, useOverride } from "@/lib/admin";
 import { ArrowRight, type LucideIcon } from "lucide-react";
 import { ministries } from "@/data/ministries";
+import ministriesBanner from "@/assets/default-banner.jpg";
 
 /** 1×1 transparent PNG — used as the default tile image so the gradient + icon show through until an admin uploads a photo. */
 const TRANSPARENT_PIXEL =
@@ -91,11 +92,15 @@ export const Route = createFileRoute("/ministries")({
 function Ministries() {
   return (
     <PageShell>
-      <PageHero
-        title="Our Ministries"
-        subtitle="There is a place for everyone to grow, serve, and belong at Newlands SDA. Explore each ministry below."
-        overlay={false}
-      />
+      <section className="relative bg-background overflow-hidden">
+        <img
+          src={ministriesBanner}
+          alt="Our Ministries"
+          className="block w-full h-auto"
+          loading="eager"
+          fetchPriority="high"
+        />
+      </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">

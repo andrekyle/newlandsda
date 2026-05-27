@@ -161,6 +161,16 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const pushTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPushedRef = React.useRef<string>("");
   const warnedImageSkipRef = React.useRef(false);
+  // Self-healing: when the admin enters edit mode we re-shrink any
+  // image overrides in localStorage that are still too large to publish
+  // (legacy uploads made before the compression preset was tightened).
+  // After recompression `schedulePush` will pick them up and push to KV
+  // so every visitor finally sees the admin's chosen images. We only run
+  // this once per session to avoid burning CPU on every toggle.
+  const reshrunkRef = React.useRef(false);
+  // Mirror of `overrides` so the async re-shrink loop sees the latest
+  // value without re-creating itself on every state change.
+  const overridesRef = React.useRef<Overrides>({});
 
   /**
    * Build the payload we actually send to the server. Image overrides are
@@ -254,6 +264,101 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     },
     [persist, schedulePush],
   );
+
+  // Keep the ref up to date so the async re-shrink loop sees current data.
+  React.useEffect(() => {
+    overridesRef.current = overrides;
+  }, [overrides]);
+
+  /**
+   * Re-encode a data URL through canvas at cascading quality/size presets
+   * until the result fits under TARGET_BYTES. Used to rescue legacy uploads
+   * that were stored at higher sizes than the current publish filter accepts.
+   */
+  const recompressDataUrl = React.useCallback(
+    async (dataUrl: string): Promise<string> => {
+      const TARGET_BYTES = 180 * 1024;
+      if (!dataUrl.startsWith("data:image/")) return dataUrl;
+      if (dataUrl.length <= TARGET_BYTES) return dataUrl;
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = reject;
+        i.src = dataUrl;
+      });
+      const PRESETS: Array<{ maxEdge: number; quality: number }> = [
+        { maxEdge: 1600, quality: 0.85 },
+        { maxEdge: 1400, quality: 0.78 },
+        { maxEdge: 1200, quality: 0.7 },
+        { maxEdge: 1000, quality: 0.62 },
+        { maxEdge: 900, quality: 0.55 },
+        { maxEdge: 800, quality: 0.5 },
+        { maxEdge: 700, quality: 0.45 },
+      ];
+      let best = dataUrl;
+      for (const { maxEdge, quality } of PRESETS) {
+        const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) continue;
+        ctx.drawImage(img, 0, 0, w, h);
+        const out = canvas.toDataURL("image/jpeg", quality);
+        if (out.length < best.length) best = out;
+        if (out.length <= 180 * 1024) return out;
+      }
+      return best;
+    },
+    [],
+  );
+
+  /**
+   * Walk every override; for each data-URL image larger than the publish
+   * filter's per-entry cap, recompress in place. If anything changed,
+   * persist + schedule a push so the (now smaller) images land in KV
+   * and become visible to every browser, not just this one.
+   */
+  const reshrinkPendingImages = React.useCallback(async () => {
+    if (reshrunkRef.current) return;
+    reshrunkRef.current = true;
+    const current = overridesRef.current;
+    const updates: Overrides = {};
+    let touched = 0;
+    for (const [id, v] of Object.entries(current)) {
+      if (
+        typeof v === "string" &&
+        v.startsWith("data:image/") &&
+        v.length > 180 * 1024
+      ) {
+        try {
+          const smaller = await recompressDataUrl(v);
+          if (smaller.length < v.length) {
+            updates[id] = smaller;
+            touched += 1;
+          }
+        } catch {
+          /* skip one bad image, keep going */
+        }
+      }
+    }
+    if (touched > 0) {
+      setOverrides((prev) => {
+        const next = { ...prev, ...updates };
+        persistAll(next);
+        return next;
+      });
+    }
+  }, [persistAll, recompressDataUrl]);
+
+  // Trigger the self-heal once the admin authenticates this session.
+  React.useEffect(() => {
+    if (editMode) {
+      void reshrinkPendingImages();
+    }
+  }, [editMode, reshrinkPendingImages]);
 
   const setOverride = React.useCallback(
     (id: string, value: unknown) => {

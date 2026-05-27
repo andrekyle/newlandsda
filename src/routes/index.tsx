@@ -4,7 +4,7 @@ import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { Calendar, BookOpen, Users, Heart, ArrowRight, MapPin, Clock, Sun, Moon } from "lucide-react";
 import congregation from "@/assets/congregation.jpg";
-import church from "@/assets/church.png";
+import church from "@/assets/church.jpg";
 import children from "@/assets/children.jpg";
 import heroImage from "@/assets/hero.jpg";
 import heroMobileImage from "@/assets/heroMobile.jpg";

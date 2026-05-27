@@ -13,6 +13,7 @@ import {
   Sparkles,
   Star,
   GraduationCap,
+  HandHeart,
 } from "lucide-react";
 import adventurersBanner from "@/assets/adventurers.jpg";
 import communicationBanner from "@/assets/communication.jpg";
@@ -25,6 +26,7 @@ import sabbathSchoolBanner from "@/assets/sabbath-school.jpg";
 import stewardshipBanner from "@/assets/stewardship.jpg";
 import treasuryBanner from "@/assets/treasury.jpg";
 import voiceOfProphecyBanner from "@/assets/voiceOfProphecy.jpg";
+import welfareBanner from "@/assets/welfare.jpg";
 import womensMinistriesBanner from "@/assets/womens-ministries.jpg";
 import youthBanner from "@/assets/youth.jpg";
 

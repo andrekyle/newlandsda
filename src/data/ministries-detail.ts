@@ -281,6 +281,24 @@ export const ministryDetails: Record<string, MinistryDetail> = {
       { title: "Claremont Campus Partnership", description: "Support the Voice of Prophecy Bible School head office in Claremont \u2014 the engine behind the lessons our local branch delivers.", goal: "" },
     ],
   },
+
+  welfare: {
+    team: [
+      { ...blankPerson("Welfare / Community Services Director"), bio: "Leads the welfare ministry \u2014 coordinates volunteers, partners with local clinics and schools, and oversees Adventist Community Services projects across Newlands and surrounding areas." },
+      { ...blankPerson("Soup Kitchen Coordinator"), bio: "Plans the weekly menu, organises volunteers and donations, and serves hot meals with prayer to families in our community." },
+      { ...blankPerson("Home-Visitation Coordinator"), bio: "Schedules visits to the sick, elderly, bereaved and shut-in \u2014 brings food parcels, encouragement and a praying presence into each home." },
+    ],
+    events: [
+      { name: "Weekly Soup Kitchen", date: "Ongoing \u00b7 weekly", description: "Hot meals served to community members and families in need \u2014 every plate paired with prayer and a friendly conversation." },
+      { name: "Winter Blanket & Clothing Drive", date: "May \u2013 July", description: "Collection and distribution of blankets, warm clothing and non-perishables to families across Newlands and surrounding communities." },
+      { name: "Community Services Sabbath", date: "Annual", description: "Celebration and recommitment Sabbath for our welfare volunteers \u2014 testimonies, prayer of dedication and recruitment of new helpers." },
+    ],
+    fundraising: [
+      { title: "Soup Kitchen Pantry", description: "Stock the kitchen with bulk ingredients, gas, disposable cups and bowls so we can keep feeding our neighbours week after week.", goal: "" },
+      { title: "Food Parcels for Families", description: "Sponsor monthly grocery parcels for families on our home-visitation list \u2014 the elderly, the sick and the bereaved.", goal: "" },
+      { title: "Winter Warmth Appeal", description: "Blankets, jerseys, beanies and socks for distribution during the coldest months of the year.", goal: "" },
+    ],
+  },
 };
 
 export function getMinistryDetail(id: string): MinistryDetail | undefined {

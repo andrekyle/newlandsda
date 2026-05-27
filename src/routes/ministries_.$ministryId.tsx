@@ -271,7 +271,7 @@ function MinistryDetail() {
                       <label className="flex items-center gap-2 text-xs">
                         <Mail className="h-3.5 w-3.5 text-primary shrink-0" />
                         <ListField
-                          value={item.email}
+                          value={item.email ?? ""}
                           onChange={(v) => update({ email: v })}
                           editMode
                           className="text-xs"
@@ -281,7 +281,7 @@ function MinistryDetail() {
                       <label className="flex items-center gap-2 text-xs">
                         <Phone className="h-3.5 w-3.5 text-primary shrink-0" />
                         <ListField
-                          value={item.phone}
+                          value={item.phone ?? ""}
                           onChange={(v) => update({ phone: v })}
                           editMode
                           className="text-xs"
@@ -291,7 +291,7 @@ function MinistryDetail() {
                       <label className="flex items-center gap-2 text-xs">
                         <MessageCircle className="h-3.5 w-3.5 text-primary shrink-0" />
                         <ListField
-                          value={item.whatsapp}
+                          value={item.whatsapp ?? ""}
                           onChange={(v) => update({ whatsapp: v })}
                           editMode
                           className="text-xs"
@@ -300,42 +300,51 @@ function MinistryDetail() {
                       </label>
                     </div>
                   ) : (
-                    (item.email || item.phone || item.whatsapp) && (
-                      <ul className="mt-3 space-y-1.5 text-sm">
-                        {item.email && (
-                          <li>
-                            <a
-                              href={`mailto:${item.email}`}
-                              className="inline-flex items-center gap-2 text-primary hover:underline break-all"
-                            >
-                              <Mail className="h-4 w-4 shrink-0" /> {item.email}
-                            </a>
-                          </li>
-                        )}
-                        {item.phone && (
-                          <li>
-                            <a
-                              href={`tel:${item.phone.replace(/\s+/g, "")}`}
-                              className="inline-flex items-center gap-2 text-primary hover:underline"
-                            >
-                              <Phone className="h-4 w-4 shrink-0" /> {item.phone}
-                            </a>
-                          </li>
-                        )}
-                        {item.whatsapp && (
-                          <li>
-                            <a
-                              href={`https://wa.me/${item.whatsapp.replace(/[^\d]/g, "")}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-2 text-primary hover:underline"
-                            >
-                              <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp
-                            </a>
-                          </li>
-                        )}
-                      </ul>
-                    )
+                    <div className="mt-3 pt-3 border-t border-border/40">
+                      <div className="text-xs font-semibold uppercase tracking-wider text-foreground/70 mb-2">
+                        Contact
+                      </div>
+                      {item.email || item.phone || item.whatsapp ? (
+                        <ul className="space-y-1.5 text-sm">
+                          {item.email && (
+                            <li>
+                              <a
+                                href={`mailto:${item.email}`}
+                                className="inline-flex items-center gap-2 text-primary hover:underline break-all"
+                              >
+                                <Mail className="h-4 w-4 shrink-0" /> {item.email}
+                              </a>
+                            </li>
+                          )}
+                          {item.phone && (
+                            <li>
+                              <a
+                                href={`tel:${item.phone.replace(/\s+/g, "")}`}
+                                className="inline-flex items-center gap-2 text-primary hover:underline"
+                              >
+                                <Phone className="h-4 w-4 shrink-0" /> {item.phone}
+                              </a>
+                            </li>
+                          )}
+                          {item.whatsapp && (
+                            <li>
+                              <a
+                                href={`https://wa.me/${item.whatsapp.replace(/[^\d]/g, "")}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 text-primary hover:underline"
+                              >
+                                <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp
+                              </a>
+                            </li>
+                          )}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-muted-foreground italic">
+                          Contact details coming soon.
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </>

@@ -46,7 +46,7 @@ function Home() {
           <div className="pl-[6.75%] flex justify-start">
             <Link
               to="/ministries"
-              className="pointer-events-auto group inline-flex items-center gap-3 rounded-full bg-white/10 px-7 py-3 text-xs font-medium uppercase tracking-[0.25em] text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black hover:gap-4"
+              className="pointer-events-auto group inline-flex items-center gap-3 rounded-full bg-white/5 px-7 py-3 text-xs font-medium uppercase tracking-[0.25em] text-white backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-black hover:gap-4"
             >
               Our Ministries
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -56,7 +56,7 @@ function Home() {
         <div className="sm:hidden flex justify-center bg-black px-4 py-5">
           <Link
             to="/ministries"
-            className="group inline-flex items-center gap-3 rounded-full bg-white/10 px-7 py-3 text-xs font-medium uppercase tracking-[0.25em] text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black hover:gap-4"
+            className="group inline-flex items-center gap-3 rounded-full bg-white/5 px-7 py-3 text-xs font-medium uppercase tracking-[0.25em] text-white backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-black hover:gap-4"
           >
             Our Ministries
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

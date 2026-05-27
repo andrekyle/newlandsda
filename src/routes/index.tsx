@@ -185,7 +185,7 @@ function Home() {
             Read More <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <EditableImage id="home.about.image" defaultSrc={congregation} alt="Newlands SDA congregation worshipping" width={1280} height={832} loading="lazy" className="rounded-sm shadow-sm" />
+        <img src={congregation} alt="Newlands SDA congregation worshipping" width={1280} height={832} loading="lazy" decoding="async" className="rounded-sm shadow-sm" />
       </section>
 
       {/* Featured event */}

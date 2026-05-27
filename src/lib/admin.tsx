@@ -160,30 +160,92 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   // debounce ~1s to coalesce rapid typing.
   const pushTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPushedRef = React.useRef<string>("");
-  const schedulePush = React.useCallback((next: Overrides) => {
-    if (!sessionPassword.current) return;
-    if (pushTimer.current) clearTimeout(pushTimer.current);
-    pushTimer.current = setTimeout(() => {
-      const serialized = JSON.stringify(next);
-      if (serialized === lastPushedRef.current) return;
-      saveOverridesServerFn({
-        data: { password: sessionPassword.current, overrides: next },
-      })
-        .then(() => {
-          lastPushedRef.current = serialized;
+  const warnedImageSkipRef = React.useRef(false);
+
+  /**
+   * Build the payload we actually send to the server. Image overrides are
+   * stored as base64 data URLs and can easily blow past Vercel's request
+   * body limit (causing "Request Entity Too Large" / HTTP 413), which
+   * would also block every text edit from publishing. We drop large data
+   * URLs from the shared payload — they stay in the editor's localStorage
+   * so the admin still sees them, but they don't get published to all
+   * visitors via the shared KV store.
+   */
+  const buildPublishablePayload = React.useCallback(
+    (next: Overrides): { payload: Overrides; skippedImages: number } => {
+      const MAX_VALUE_BYTES = 200 * 1024; // ~200 KB per entry
+      const MAX_TOTAL_BYTES = 1_500 * 1024; // ~1.5 MB total payload
+      const payload: Overrides = {};
+      let skippedImages = 0;
+      let total = 0;
+      // First pass: drop oversized data-URL values outright.
+      for (const [id, value] of Object.entries(next)) {
+        if (
+          typeof value === "string" &&
+          value.startsWith("data:") &&
+          value.length > MAX_VALUE_BYTES
+        ) {
+          skippedImages += 1;
+          continue;
+        }
+        payload[id] = value;
+      }
+      // Second pass: if still over the total budget, drop remaining
+      // data-URL values (largest first) until we fit.
+      const serialized = () => JSON.stringify(payload).length;
+      total = serialized();
+      if (total > MAX_TOTAL_BYTES) {
+        const dataEntries = Object.entries(payload)
+          .filter(([, v]) => typeof v === "string" && (v as string).startsWith("data:"))
+          .sort((a, b) => (b[1] as string).length - (a[1] as string).length);
+        for (const [id] of dataEntries) {
+          delete payload[id];
+          skippedImages += 1;
+          if (serialized() <= MAX_TOTAL_BYTES) break;
+        }
+      }
+      return { payload, skippedImages };
+    },
+    [],
+  );
+
+  const schedulePush = React.useCallback(
+    (next: Overrides) => {
+      if (!sessionPassword.current) return;
+      if (pushTimer.current) clearTimeout(pushTimer.current);
+      pushTimer.current = setTimeout(() => {
+        const { payload, skippedImages } = buildPublishablePayload(next);
+        const serialized = JSON.stringify(payload);
+        if (serialized === lastPushedRef.current) return;
+        saveOverridesServerFn({
+          data: { password: sessionPassword.current, overrides: payload },
         })
-        .catch((err) => {
-          console.warn("Could not save shared edits:", err);
-          if (typeof window !== "undefined") {
-            // Surface once per failure burst so the editor knows.
-            alert(
-              "Couldn't save changes to the shared site. They're kept in this browser for now \u2014 try again in a moment.\n\n" +
-                String(err?.message ?? err),
-            );
-          }
-        });
-    }, 1000);
-  }, []);
+          .then(() => {
+            lastPushedRef.current = serialized;
+            if (skippedImages > 0 && !warnedImageSkipRef.current) {
+              warnedImageSkipRef.current = true;
+              if (typeof window !== "undefined") {
+                alert(
+                  `Your text edits were published to all visitors, but ${skippedImages} image edit${skippedImages === 1 ? " was" : "s were"} too large to publish.\n\n` +
+                    "Large images stay visible only in this browser. To publish them to everyone, replace them with smaller versions (the uploader already resizes, but very large originals can still exceed the limit).",
+                );
+              }
+            }
+          })
+          .catch((err) => {
+            console.warn("Could not save shared edits:", err);
+            if (typeof window !== "undefined") {
+              // Surface once per failure burst so the editor knows.
+              alert(
+                "Couldn't save changes to the shared site. They're kept in this browser for now \u2014 try again in a moment.\n\n" +
+                  String(err?.message ?? err),
+              );
+            }
+          });
+      }, 1000);
+    },
+    [buildPublishablePayload],
+  );
 
   const persistAll = React.useCallback(
     (next: Overrides) => {

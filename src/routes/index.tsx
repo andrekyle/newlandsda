@@ -4,7 +4,7 @@ import { PageShell } from "@/components/PageShell";
 import { EditableText, EditableImage } from "@/components/Editable";
 import { Calendar, BookOpen, Users, Heart, ArrowRight, MapPin, Clock, Sun, Moon } from "lucide-react";
 import congregation from "@/assets/congregation.jpg";
-import bible from "@/assets/bible.jpg";
+import church from "@/assets/church.png";
 import children from "@/assets/children.jpg";
 import heroImage from "@/assets/hero.jpg";
 import heroMobileImage from "@/assets/heroMobile.jpg";
@@ -191,7 +191,7 @@ function Home() {
       {/* Featured event */}
       <section className="bg-card">
         <div className="mx-auto max-w-6xl px-4 py-20 grid gap-10 md:grid-cols-2 items-center">
-          <EditableImage id="home.featured.image" defaultSrc={bible} alt="Open Bible" width={1280} height={832} loading="lazy" className="rounded-sm shadow-sm order-2 md:order-1" />
+          <img src={church} alt="Newlands SDA church" width={1280} height={832} loading="lazy" decoding="async" className="rounded-sm shadow-sm order-2 md:order-1" />
           <div className="order-1 md:order-2">
             <div className="text-xs font-semibold uppercase tracking-wide text-primary mb-2">Featured Event</div>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Newlands Church Opening</h2>

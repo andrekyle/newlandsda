@@ -12,6 +12,7 @@ import {
   Flower,
   Sparkles,
   Star,
+  GraduationCap,
 } from "lucide-react";
 import adventurersBanner from "@/assets/adventurers.jpg";
 import communicationBanner from "@/assets/communication.jpg";
@@ -23,6 +24,7 @@ import personalMinistryBanner from "@/assets/personal-ministry.jpg";
 import sabbathSchoolBanner from "@/assets/sabbath-school.jpg";
 import stewardshipBanner from "@/assets/stewardship.jpg";
 import treasuryBanner from "@/assets/treasury.jpg";
+import voiceOfProphecyBanner from "@/assets/voiceOfProphecy.jpg";
 import womensMinistriesBanner from "@/assets/womens-ministries.jpg";
 import youthBanner from "@/assets/youth.jpg";
 
@@ -289,7 +291,31 @@ export const ministries: Ministry[] = [
     bannerImage: treasuryBanner,
   },
   {
-    id: "womens-ministries",
+    id: "voice-of-prophecy",
+    title: "Voice of Prophecy",
+    tagline: "Free Bible school — sharing Christ one lesson at a time.",
+    short:
+      "A free Bible school ministry partnering with the Voice of Prophecy Bible School in Claremont — our members lead Bible studies with church family and the wider community.",
+    icon: GraduationCap,
+    gradient: "from-blue-700 to-indigo-900",
+    leader: "Voice of Prophecy Coordinator",
+    meets: "Weekly Bible-study groups · ongoing enrolment",
+    location: "In homes, online & on church grounds",
+    description: [
+      "The Voice of Prophecy (VOP) is one of the longest-running media and Bible-school ministries of the Seventh-day Adventist Church — sharing the gospel through radio, television and free Bible correspondence courses since 1929.",
+      "In Southern Africa, the Voice of Prophecy Bible School operates from its main campus in Claremont, Cape Town, where lessons are produced, dispatched and marked, and where qualified instructors guide thousands of students through Scripture every year.",
+      "At Newlands SDA we run a local VOP branch: trained members enrol church family and community contacts in the free Discover Bible School courses, walk with each student week-by-week, mark their lessons, pray with them, and introduce them to the fellowship of the church.",
+      "Whether you are a long-time member wanting to grow deeper in the Word, or a friend curious about what the Bible really teaches, every lesson is free and there is no obligation — only an open Bible and an open heart.",
+    ],
+    activities: [
+      "Free Discover / Voice of Prophecy Bible-study courses",
+      "One-to-one Bible studies with community contacts",
+      "Lesson marking, prayer & personal follow-up",
+      "Bridge-events from Bible study to baptism & church family",
+    ],
+    bannerImage: voiceOfProphecyBanner,
+  },
+  {
     title: "Women's Ministries",
     tagline: "A Christ-centred community for the women of our church.",
     short:

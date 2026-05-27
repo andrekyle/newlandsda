@@ -263,6 +263,24 @@ export const ministryDetails: Record<string, MinistryDetail> = {
       { title: "Capital Improvement Drive", description: "Member-designated gifts for major upgrades to the sanctuary, sound, classrooms and grounds.", goal: "" },
     ],
   },
+
+  "voice-of-prophecy": {
+    team: [
+      { ...blankPerson("VOP Branch Coordinator"), bio: "Leads the local Voice of Prophecy branch \u2014 enrols students in the free Bible school, assigns Bible instructors, and partners with the Claremont VOP campus on follow-up." },
+      { ...blankPerson("Bible Instructor"), bio: "Personally walks community members and church family through the Discover Bible School lessons \u2014 marking work, answering questions and praying with each student." },
+      { ...blankPerson("Follow-up & Decisions Coordinator"), bio: "Bridges students from correspondence study to fellowship in the church \u2014 home visits, prayer support and preparation for baptism." },
+    ],
+    events: [
+      { name: "Discover Bible School Enrolment Sabbath", date: "Quarterly", description: "Members invite friends, neighbours and church family to begin the free 27-lesson Discover Bible course \u2014 sign-up cards available after the service." },
+      { name: "Bible Instructor Training", date: "Monthly", description: "Practical training for members who want to give Bible studies \u2014 lesson handling, listening skills and leading someone to a decision for Christ." },
+      { name: "Graduation & Baptism Celebration", date: "Annual", description: "Celebration Sabbath honouring students who have completed the Bible School course \u2014 with testimonies, certificates and baptism for those who choose to follow Jesus." },
+    ],
+    fundraising: [
+      { title: "Free Lesson Sponsorship", description: "Underwrite printing, postage and online delivery of free Bible lessons so cost is never a barrier to studying Scripture.", goal: "" },
+      { title: "Bible Instructor Resources", description: "Study guides, marking tools and follow-up materials for our team of volunteer Bible instructors.", goal: "" },
+      { title: "Claremont Campus Partnership", description: "Support the Voice of Prophecy Bible School head office in Claremont \u2014 the engine behind the lessons our local branch delivers.", goal: "" },
+    ],
+  },
 };
 
 export function getMinistryDetail(id: string): MinistryDetail | undefined {

@@ -7,15 +7,14 @@ import {
   ListTextarea,
   ListImage,
 } from "@/components/Editable";
-import { ArrowLeft, ArrowRight, Users, Clock, MapPin, Calendar, HeartHandshake } from "lucide-react";
-import { getMinistry, ministries } from "@/data/ministries";
+import { ArrowLeft, ArrowRight, Users, Clock, MapPin, Calendar, HeartHandshake, Image as ImageIcon } from "lucide-react";
+import { getMinistry } from "@/data/ministries";
 import { getMinistryDetail } from "@/data/ministries-detail";
 import type {
   MinistryTeamMember,
   MinistryEvent,
   MinistryFundraiser,
 } from "@/data/ministries-detail";
-import { MinistryTileVisual } from "./ministries";
 
 export const Route = createFileRoute("/ministries_/$ministryId")({
   component: MinistryDetail,
@@ -80,7 +79,6 @@ function MinistryDetail() {
 
   const m = ministry;
   const Icon = m.icon;
-  const others = ministries.filter((x) => x.id !== m.id).slice(0, 3);
   const detail = getMinistryDetail(m.id) ?? { team: [], events: [], fundraising: [] };
 
   return (
@@ -383,39 +381,50 @@ function MinistryDetail() {
         </div>
       </section>
 
-      {/* Other ministries */}
-      {others.length > 0 && (
-        <section className="bg-card border-t border-border/50">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <h2 className="text-2xl font-semibold tracking-tight mb-8">Other ministries</h2>
-            <div className="grid gap-4 md:grid-cols-3">
-              {others.map((o) => {
-                const OIcon = o.icon;
-                return (
-                  <Link
-                    key={o.id}
-                    to="/ministries/$ministryId"
-                    params={{ ministryId: o.id }}
-                    className="group flex flex-col bg-background border border-border/50 rounded-sm overflow-hidden hover:border-primary/50 transition-colors"
-                  >
-                    <MinistryTileVisual
-                      ministryId={o.id}
-                      gradient={o.gradient}
-                      Icon={OIcon}
-                      iconSize="h-10 w-10"
-                      defaultImage={o.bannerImage}
-                    />
-                    <div className="p-5">
-                      <h3 className="text-lg font-semibold tracking-tight">{o.title}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{o.short}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+      {/* Activity gallery */}
+      <section className="bg-card border-t border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="flex items-center gap-3 mb-2">
+            <ImageIcon className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-semibold tracking-tight">Activity gallery</h2>
           </div>
-        </section>
-      )}
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Photos from this ministry&rsquo;s recent activities. In edit mode you can
+            upload new photos and add captions.
+          </p>
+          <EditableList<{ image: string; caption: string }>
+            id={`ministries.${m.id}.gallery`}
+            defaultValue={[]}
+            newItem={() => ({ image: "", caption: "" })}
+            addLabel="Add photo"
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            itemClassName="bg-background border border-border/50 rounded-sm overflow-hidden flex flex-col"
+            renderItem={(item, { update, editMode, index }) => (
+              <>
+                <ListImage
+                  value={item.image}
+                  onChange={(v) => update({ image: v })}
+                  editMode={editMode}
+                  alt={item.caption || "Ministry activity"}
+                  className="aspect-video w-full"
+                  uploadId={`ministries.${m.id}.gallery.${index}.image`}
+                />
+                {(editMode || item.caption) && (
+                  <div className="p-4">
+                    <ListField
+                      value={item.caption}
+                      onChange={(v) => update({ caption: v })}
+                      editMode={editMode}
+                      className="text-sm text-muted-foreground"
+                      placeholder="Caption (optional)"
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          />
+        </div>
+      </section>
     </PageShell>
   );
 }

@@ -103,3 +103,111 @@ export const saveOverridesServerFn = createServerFn({ method: "POST" })
     await saveOverrides(data.overrides);
     return { ok: true as const };
   });
+
+/**
+ * Upload an image to the GitHub repo via the Contents API. The file is
+ * committed to `public/uploads/<slug>-<hash>.<ext>` which Vercel serves at
+ * `/uploads/<slug>-<hash>.<ext>` after the auto-redeploy completes.
+ *
+ * Required env vars (set on the deployment):
+ *   - ADMIN_PASSWORD            (already used elsewhere)
+ *   - GITHUB_TOKEN              PAT with `contents:write` on the repo
+ *   - GITHUB_REPO               e.g. "andrekyle/newlandsda"
+ *   - GITHUB_BRANCH (optional)  default "main"
+ *
+ * If GITHUB_TOKEN or GITHUB_REPO is missing the function throws — the
+ * client can then fall back to embedding the data URL into the overrides
+ * payload (the existing behaviour).
+ */
+export const uploadImageServerFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => {
+    if (!data || typeof data !== "object") throw new Error("Invalid payload");
+    const d = data as { password?: unknown; id?: unknown; dataUrl?: unknown };
+    if (typeof d.password !== "string") throw new Error("Invalid payload");
+    if (typeof d.id !== "string" || !d.id) throw new Error("Invalid payload");
+    if (typeof d.dataUrl !== "string" || !d.dataUrl.startsWith("data:image/")) {
+      throw new Error("Invalid payload");
+    }
+    return { password: d.password, id: d.id, dataUrl: d.dataUrl };
+  })
+  .handler(async ({ data }) => {
+    if (!checkPassword(data.password)) {
+      throw new Error("Unauthorized");
+    }
+    const token = process.env.GITHUB_TOKEN;
+    const repo = process.env.GITHUB_REPO;
+    const branch = process.env.GITHUB_BRANCH || "main";
+    if (!token || !repo) {
+      throw new Error("Server upload not configured (missing GITHUB_TOKEN or GITHUB_REPO)");
+    }
+
+    // Parse data URL.
+    const match = /^data:image\/([a-z0-9.+-]+);base64,(.+)$/i.exec(data.dataUrl);
+    if (!match) throw new Error("Unsupported image format");
+    const mimeSub = match[1].toLowerCase();
+    const base64 = match[2];
+    const extMap: Record<string, string> = {
+      jpeg: "jpg",
+      jpg: "jpg",
+      png: "png",
+      webp: "webp",
+      gif: "gif",
+      "svg+xml": "svg",
+    };
+    const ext = extMap[mimeSub] ?? "bin";
+    if (ext === "bin") throw new Error("Unsupported image format");
+
+    // Hash for cache-busting + filename uniqueness.
+    const { createHash } = await import("node:crypto");
+    const hash = createHash("sha256").update(base64, "base64").digest("hex").slice(0, 12);
+
+    // Slugify the override id for the filename.
+    const slug = data.id
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "image";
+
+    const path = `public/uploads/${slug}-${hash}.${ext}`;
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/${encodeURI(path)}`;
+
+    // Check if the file already exists (same content already uploaded).
+    // If so, skip the PUT and reuse the URL — saves a no-op commit.
+    let exists = false;
+    try {
+      const head = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "User-Agent": "newlandsda-uploader",
+        },
+      });
+      if (head.ok) exists = true;
+    } catch {
+      /* ignore — treat as not existing */
+    }
+
+    if (!exists) {
+      const putRes = await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "User-Agent": "newlandsda-uploader",
+        },
+        body: JSON.stringify({
+          message: `Upload image for ${data.id}`,
+          content: base64,
+          branch,
+        }),
+      });
+      if (!putRes.ok) {
+        const text = await putRes.text().catch(() => "");
+        throw new Error(`GitHub upload failed (${putRes.status}): ${text.slice(0, 200)}`);
+      }
+    }
+
+    return { url: `/uploads/${slug}-${hash}.${ext}` };
+  });
+

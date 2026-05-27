@@ -95,9 +95,27 @@ export function EditableImage({
   fetchPriority,
   loading,
 }: EditableImageProps) {
-  const { editMode, clearOverride } = useAdmin();
+  const { editMode, clearOverride, uploadImage } = useAdmin();
   const [src, setSrc] = useOverride<string>(id, defaultSrc);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = React.useState(false);
+
+  // Persist the chosen image. Tries server-side upload first (commits the
+  // file to the repo's public/uploads/ via GitHub API → returns a URL we
+  // can store in overrides instead of bloating KV with base64). Falls back
+  // to embedding the data URL if upload isn't configured / fails.
+  const persistImage = React.useCallback(
+    async (dataUrl: string) => {
+      setUploading(true);
+      try {
+        const url = await uploadImage(id, dataUrl);
+        setSrc(url ?? dataUrl);
+      } finally {
+        setUploading(false);
+      }
+    },
+    [id, setSrc, uploadImage],
+  );
 
   const onFile = (file?: File | null) => {
     if (!file) return;
@@ -135,7 +153,7 @@ export function EditableImage({
         // Only keep PNG output for tiny transparent assets (logos / icons).
         // Everything else gets recompressed to JPEG for size.
         if (isPng && file.size < 120 * 1024) {
-          setSrc(dataUrl);
+          void persistImage(dataUrl);
           return;
         }
         const encode = (maxEdge: number, quality: number) => {
@@ -157,13 +175,13 @@ export function EditableImage({
           if (!out) continue;
           if (!best || out.length < best.length) best = out;
           if (out.length <= TARGET_BYTES) {
-            setSrc(out);
+            void persistImage(out);
             return;
           }
         }
-        setSrc(best ?? dataUrl);
+        void persistImage(best ?? dataUrl);
       };
-      img.onerror = () => setSrc(dataUrl);
+      img.onerror = () => void persistImage(dataUrl);
       img.src = dataUrl;
     };
     reader.readAsDataURL(file);
@@ -228,9 +246,10 @@ export function EditableImage({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 text-xs font-semibold rounded-none shadow-lg"
+          disabled={uploading}
+          className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-wait text-white px-3 py-2 text-xs font-semibold rounded-none shadow-lg"
         >
-          <Upload className="h-4 w-4" /> Replace image
+          <Upload className="h-4 w-4" /> {uploading ? "Uploading\u2026" : "Replace image"}
         </button>
         {src !== defaultSrc && (
           <button

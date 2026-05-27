@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   loadOverridesServerFn,
   saveOverridesServerFn,
+  uploadImageServerFn,
   verifyAdminServerFn,
 } from "./edits-sync";
 
@@ -42,6 +43,13 @@ type AdminContextValue = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  /**
+   * Upload an image data URL to the GitHub repo (commits to
+   * `public/uploads/`). Returns the public URL on success, or `null` if
+   * server upload isn't configured / fails. Callers should fall back to
+   * embedding the data URL on null.
+   */
+  uploadImage: (id: string, dataUrl: string) => Promise<string | null>;
 };
 
 const AdminContext = React.createContext<AdminContextValue | null>(null);
@@ -420,6 +428,22 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     setEditMode(false);
   }, []);
 
+  const uploadImage = React.useCallback(
+    async (id: string, dataUrl: string): Promise<string | null> => {
+      if (!sessionPassword.current) return null;
+      if (!dataUrl.startsWith("data:image/")) return null;
+      try {
+        const res = await uploadImageServerFn({
+          data: { password: sessionPassword.current, id, dataUrl },
+        });
+        return res?.url ?? null;
+      } catch {
+        return null;
+      }
+    },
+    [],
+  );
+
   const exportJson = React.useCallback(
     () => JSON.stringify(overrides, null, 2),
     [overrides],
@@ -503,6 +527,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     redo,
     canUndo,
     canRedo,
+    uploadImage,
   };
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;

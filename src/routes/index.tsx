@@ -42,8 +42,8 @@ function Home() {
           wrapperClassName="hidden sm:block w-full"
           fetchPriority="high"
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-6 sm:bottom-10">
-          <div className="mx-auto max-w-6xl px-6 sm:px-10 flex justify-start">
+        <div className="pointer-events-none absolute inset-x-0 bottom-16 sm:bottom-24">
+          <div className="px-3 sm:px-6 flex justify-start">
             <Link
               to="/ministries"
               className="pointer-events-auto inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg ring-1 ring-black/10 transition-colors hover:bg-primary/90"

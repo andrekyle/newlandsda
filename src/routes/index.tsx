@@ -43,7 +43,7 @@ function Home() {
           fetchPriority="high"
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-16 sm:bottom-24">
-          <div className="pl-[6.55%] flex justify-start">
+          <div className="pl-[6.75%] flex justify-start">
             <Link
               to="/ministries"
               className="pointer-events-auto inline-flex items-center gap-2 rounded-sm bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg ring-1 ring-black/10 transition-colors hover:bg-primary/90"

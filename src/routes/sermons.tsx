@@ -1,107 +1,43 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { PageShell, PageHero } from "@/components/PageShell";
-import { Play, User, Search, Video, Youtube, RefreshCw } from "lucide-react";
+import {
+  Play,
+  User,
+  Search,
+  Video,
+  Youtube,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import * as React from "react";
 import { useMemo, useState } from "react";
+import { EditableText } from "@/components/Editable";
+import { useAdmin, useOverride } from "@/lib/admin";
+import { sermons as staticSermons, type Sermon } from "@/data/sermons";
 import sermonsBanner from "@/assets/sermons.png";
 
-const CHANNEL_ID = "UCRsK1USoQS7quKLVZ_itPPA"; // @JoburgNorthSDA
 const CHANNEL_URL = "https://www.youtube.com/@JoburgNorthSDA";
 
-type Sermon = {
-  id: string;
-  title: string;
-  speaker: string;
-  date: string;
-  publishedAt: string;
-  scripture: string;
-  series: string;
-  videoUrl: string;
-  thumbnail: string;
-};
-
-function decodeEntities(s: string): string {
-  return s
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&#x27;/g, "'")
-    .replace(/&apos;/g, "'");
-}
-
-function pick(re: RegExp, source: string): string {
-  const m = source.match(re);
-  return m ? decodeEntities(m[1].trim()) : "";
-}
-
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-}
-
-function extractScripture(text: string): string {
-  if (!text) return "";
-  const m = text.match(
-    /\b((?:[1-3]\s)?(?:Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|Corinthians|Galatians|Ephesians|Philippians|Colossians|Thessalonians|Timothy|Titus|Philemon|Hebrews|James|Peter|Jude|Revelation)\s+\d+(?::\d+(?:[-\u2013]\d+)?)?)\b/i,
+/** Extract an 11-char YouTube video ID from a URL or raw ID. */
+function parseVideoId(input: string): string | null {
+  const trimmed = input.trim();
+  if (/^[A-Za-z0-9_-]{11}$/.test(trimmed)) return trimmed;
+  const m = trimmed.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/,
   );
-  return m ? m[1] : "";
+  return m ? m[1] : null;
 }
 
-export const fetchChannelSermons = createServerFn({ method: "GET" }).handler(async () => {
-  const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-  try {
-    const res = await fetch(url, {
-      headers: { "user-agent": "Mozilla/5.0 NewlandsSDA-site" },
-    });
-    if (!res.ok) return { sermons: [] as Sermon[], error: `Feed returned ${res.status}` };
-    const xml = await res.text();
+function thumbnailFor(videoId: string): string {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
 
-    const entryRe = /<entry>([\s\S]*?)<\/entry>/g;
-    const sermons: Sermon[] = [];
-    let m: RegExpExecArray | null;
-    while ((m = entryRe.exec(xml)) !== null) {
-      const block = m[1];
-      const videoId = pick(/<yt:videoId>([^<]+)<\/yt:videoId>/, block);
-      if (!videoId) continue;
-      const title = pick(/<title>([\s\S]*?)<\/title>/, block);
-      const published = pick(/<published>([^<]+)<\/published>/, block);
-      const author = pick(/<author>[\s\S]*?<name>([^<]+)<\/name>[\s\S]*?<\/author>/, block);
-      const thumbnail =
-        pick(/<media:thumbnail[^>]*url="([^"]+)"/, block) ||
-        `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-      const description = pick(/<media:description>([\s\S]*?)<\/media:description>/, block);
-
-      const isLiveStream = /live\s*stream/i.test(title);
-      const series = isLiveStream ? "Live Stream" : "Sermon";
-      const scripture = extractScripture(`${title}\n${description}`);
-
-      sermons.push({
-        id: videoId,
-        title,
-        speaker: author || "Newlands SDA",
-        date: formatDate(published),
-        publishedAt: published,
-        scripture,
-        series,
-        videoUrl: `https://www.youtube.com/embed/${videoId}`,
-        thumbnail,
-      });
-    }
-
-    sermons.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
-    return { sermons, error: null as string | null };
-  } catch (err) {
-    return { sermons: [] as Sermon[], error: (err as Error).message };
-  }
-});
+function embedFor(videoId: string): string {
+  return `https://www.youtube.com/embed/${videoId}`;
+}
 
 export const Route = createFileRoute("/sermons")({
   component: Sermons,
-  loader: async () => await fetchChannelSermons(),
   head: () => ({
     meta: [
       { title: "Sermons — Newlands SDA Church" },
@@ -115,7 +51,28 @@ export const Route = createFileRoute("/sermons")({
 });
 
 function Sermons() {
-  const { sermons, error } = Route.useLoaderData();
+  const { editMode } = useAdmin();
+  const [extras, setExtras] = useOverride<Sermon[]>("sermons.extras", []);
+  const [deletedIds, setDeletedIds] = useOverride<string[]>(
+    "sermons.deleted",
+    [],
+  );
+
+  const sermons = useMemo(() => {
+    const merged = [...extras, ...staticSermons];
+    const seen = new Set<string>();
+    const unique: Sermon[] = [];
+    for (const s of merged) {
+      if (!seen.has(s.id) && !deletedIds.includes(s.id)) {
+        seen.add(s.id);
+        unique.push(s);
+      }
+    }
+    return unique.sort((a, b) =>
+      a.publishedAt < b.publishedAt ? 1 : -1,
+    );
+  }, [extras, deletedIds]);
+
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -134,11 +91,72 @@ function Sermons() {
     );
   }, [query, sermons]);
 
+  const deleteSermon = (id: string) => {
+    if (!confirm("Delete this sermon? This is local to your browser.")) return;
+    const nextExtras = extras.filter((s) => s.id !== id);
+    if (nextExtras.length !== extras.length) setExtras(nextExtras);
+    if (!deletedIds.includes(id)) setDeletedIds([...deletedIds, id]);
+    if (selectedId === id) setSelectedId(null);
+  };
+
+  // --- Add-new-sermon form state (only shown in edit mode) ---
+  const [draftUrl, setDraftUrl] = useState("");
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftSpeaker, setDraftSpeaker] = useState("");
+  const [draftDate, setDraftDate] = useState(""); // YYYY-MM-DD
+  const [draftScripture, setDraftScripture] = useState("");
+  const [draftSeries, setDraftSeries] = useState("Sermon");
+  const [draftError, setDraftError] = useState<string | null>(null);
+
+  const addSermon = (e: React.FormEvent) => {
+    e.preventDefault();
+    setDraftError(null);
+    const videoId = parseVideoId(draftUrl);
+    if (!videoId) {
+      setDraftError("Enter a valid YouTube URL or 11-character video ID.");
+      return;
+    }
+    if (
+      extras.some((s) => s.id === videoId) ||
+      staticSermons.some((s) => s.id === videoId)
+    ) {
+      setDraftError("A sermon with that video ID already exists.");
+      return;
+    }
+    const iso = draftDate || new Date().toISOString().slice(0, 10);
+    const display = (() => {
+      const [y, m, d] = iso.split("-").map(Number);
+      const dt = new Date(y, (m ?? 1) - 1, d ?? 1);
+      return dt.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    })();
+    const entry: Sermon = {
+      id: videoId,
+      title: draftTitle.trim() || "Untitled sermon",
+      speaker: draftSpeaker.trim() || "Newlands SDA",
+      date: display,
+      publishedAt: iso,
+      scripture: draftScripture.trim(),
+      series: draftSeries.trim() || "Sermon",
+    };
+    setExtras([entry, ...extras]);
+    setSelectedId(videoId);
+    setDraftUrl("");
+    setDraftTitle("");
+    setDraftSpeaker("");
+    setDraftDate("");
+    setDraftScripture("");
+    setDraftSeries("Sermon");
+  };
+
   return (
     <PageShell>
       <PageHero
         title="Sermons"
-        subtitle="Bible-based messages from our YouTube channel, updated automatically."
+        subtitle="Bible-based messages from Newlands SDA Church."
         image={sermonsBanner}
         overlay={false}
       />
@@ -162,7 +180,7 @@ function Sermons() {
             <div className="aspect-video bg-black">
               <iframe
                 key={selected.id}
-                src={selected.videoUrl}
+                src={embedFor(selected.id)}
                 title={selected.title}
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -171,26 +189,50 @@ function Sermons() {
             </div>
             <div className="p-6 border-t border-border/50">
               <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-                {selected.series} · {selected.date}
+                <EditableText
+                  id={`sermon.${selected.id}.series`}
+                  defaultValue={selected.series}
+                  as="span"
+                />{" "}
+                ·{" "}
+                <EditableText
+                  id={`sermon.${selected.id}.date`}
+                  defaultValue={selected.date}
+                  as="span"
+                />
               </div>
-              <h2 className="text-2xl font-semibold tracking-tight mt-1">{selected.title}</h2>
+              <h2 className="text-2xl font-semibold tracking-tight mt-1">
+                <EditableText
+                  id={`sermon.${selected.id}.title`}
+                  defaultValue={selected.title}
+                  as="span"
+                />
+              </h2>
               <div className="mt-2 text-sm text-muted-foreground flex flex-wrap gap-4">
                 <span className="flex items-center gap-1.5">
                   <User className="h-3.5 w-3.5" />
-                  {selected.speaker}
+                  <EditableText
+                    id={`sermon.${selected.id}.speaker`}
+                    defaultValue={selected.speaker}
+                    as="span"
+                  />
                 </span>
-                {selected.scripture && <span className="italic">{selected.scripture}</span>}
+                <span className="italic">
+                  <EditableText
+                    id={`sermon.${selected.id}.scripture`}
+                    defaultValue={selected.scripture}
+                    as="span"
+                  />
+                </span>
               </div>
             </div>
           </div>
         </section>
       ) : (
         <section className="mx-auto max-w-5xl px-4 py-16 text-center">
-          <RefreshCw className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
           <p className="text-muted-foreground">
-            {error
-              ? `Couldn't load videos from the channel (${error}).`
-              : "No videos found on the channel yet."}
+            No sermons yet.
+            {editMode ? " Add one below." : ""}
           </p>
           <a
             href={CHANNEL_URL}
@@ -200,6 +242,99 @@ function Sermons() {
           >
             <Youtube className="h-4 w-4" /> Open the channel on YouTube
           </a>
+        </section>
+      )}
+
+      {/* Add-new form (admin only) */}
+      {editMode && (
+        <section className="mx-auto max-w-5xl px-4 pb-8">
+          <form
+            onSubmit={addSermon}
+            className="bg-card border border-border/50 p-6 rounded-sm shadow-sm space-y-4"
+          >
+            <div className="flex items-center gap-2 text-primary">
+              <Plus className="h-4 w-4" />
+              <h3 className="font-semibold">Add a sermon</h3>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">
+                  YouTube URL or video ID *
+                </span>
+                <input
+                  value={draftUrl}
+                  onChange={(e) => setDraftUrl(e.target.value)}
+                  placeholder="https://youtu.be/abc123XYZ_0"
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  required
+                />
+              </label>
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">Title</span>
+                <input
+                  value={draftTitle}
+                  onChange={(e) => setDraftTitle(e.target.value)}
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">Speaker</span>
+                <input
+                  value={draftSpeaker}
+                  onChange={(e) => setDraftSpeaker(e.target.value)}
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">Date</span>
+                <input
+                  type="date"
+                  value={draftDate}
+                  onChange={(e) => setDraftDate(e.target.value)}
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">
+                  Scripture
+                </span>
+                <input
+                  value={draftScripture}
+                  onChange={(e) => setDraftScripture(e.target.value)}
+                  placeholder="John 3:16"
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+              <label className="text-sm">
+                <span className="block text-muted-foreground mb-1">Series</span>
+                <select
+                  value={draftSeries}
+                  onChange={(e) => setDraftSeries(e.target.value)}
+                  className="w-full bg-background border border-border/50 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option>Sermon</option>
+                  <option>Live Stream</option>
+                  <option>Sabbath School</option>
+                  <option>Vespers</option>
+                  <option>Special</option>
+                </select>
+              </label>
+            </div>
+            {draftError && (
+              <p className="text-sm text-destructive">{draftError}</p>
+            )}
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-sm hover:opacity-90 transition-opacity"
+            >
+              <Plus className="h-4 w-4" /> Add sermon
+            </button>
+            <p className="text-xs text-muted-foreground">
+              Added sermons are stored locally in this browser. To make them
+              permanent for all visitors, add the entry to{" "}
+              <code className="font-mono">src/data/sermons.ts</code>.
+            </p>
+          </form>
         </section>
       )}
 
@@ -225,16 +360,16 @@ function Sermons() {
               {filtered.map((s) => {
                 const active = selected != null && s.id === selected.id;
                 return (
-                  <li key={s.id}>
+                  <li key={s.id} className="flex items-stretch">
                     <button
                       onClick={() => setSelectedId(s.id)}
-                      className={`w-full text-left px-5 py-4 flex items-center gap-4 hover:bg-muted transition-colors ${active ? "bg-muted" : ""}`}
+                      className={`flex-1 text-left px-5 py-4 flex items-center gap-4 hover:bg-muted transition-colors ${active ? "bg-muted" : ""}`}
                     >
                       <div
                         className={`h-14 w-24 rounded-sm overflow-hidden shrink-0 bg-muted relative ${active ? "ring-2 ring-primary" : ""}`}
                       >
                         <img
-                          src={s.thumbnail}
+                          src={thumbnailFor(s.id)}
                           alt=""
                           loading="lazy"
                           className="h-full w-full object-cover"
@@ -256,10 +391,22 @@ function Sermons() {
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap gap-x-3">
                           <span>{s.speaker}</span>
-                          {s.scripture && <span className="italic">{s.scripture}</span>}
+                          {s.scripture && (
+                            <span className="italic">{s.scripture}</span>
+                          )}
                         </div>
                       </div>
                     </button>
+                    {editMode && (
+                      <button
+                        type="button"
+                        onClick={() => deleteSermon(s.id)}
+                        title="Delete sermon"
+                        className="px-4 text-muted-foreground hover:text-destructive transition-colors border-l border-border/50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </li>
                 );
               })}

@@ -105,6 +105,7 @@ export const ministries: Ministry[] = [
     bannerImage: baptismClassBanner,
   },
   {
+    id: "communication",
     title: "Communication",
     tagline: "Sharing the message of hope and salvation.",
     short:

@@ -1,8 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageShell, PageHero } from "@/components/PageShell";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { EditableText } from "@/components/Editable";
 import { ministries } from "@/data/ministries";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import contactBanner from "@/assets/contact.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -16,6 +24,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const [department, setDepartment] = useState("general");
   return (
     <PageShell>
       <PageHero title="Contact Us" subtitle="We'd love to hear from you. Come visit, call, or send a message." image={contactBanner} overlay={false} />
@@ -97,19 +106,23 @@ function Contact() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5 text-foreground">Department / leader to contact</label>
-            <select
-              name="department"
-              defaultValue="general"
-              className="w-full border border-border/50 bg-[#141414] text-neutral-100 px-3.5 py-2.5 text-sm rounded-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-            >
-              <option value="general">General enquiry (church office)</option>
-              <option value="pastor">Pastor</option>
-              {ministries.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.title} — leader
-                </option>
-              ))}
-            </select>
+            <Select value={department} onValueChange={setDepartment}>
+              <SelectTrigger
+                name="department"
+                className="w-full h-auto border border-border/50 bg-[#141414] text-neutral-100 px-3.5 py-2.5 text-sm rounded-sm shadow-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+              >
+                <SelectValue placeholder="Select a department" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#141414] border-border/50 text-neutral-100">
+                <SelectItem value="general" className="text-neutral-100 focus:bg-white/5 focus:text-white">General enquiry (church office)</SelectItem>
+                <SelectItem value="pastor" className="text-neutral-100 focus:bg-white/5 focus:text-white">Pastor</SelectItem>
+                {ministries.map((m) => (
+                  <SelectItem key={m.id} value={m.id} className="text-neutral-100 focus:bg-white/5 focus:text-white">
+                    {m.title} — leader
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <p className="mt-1.5 text-xs text-muted-foreground">
               Each ministry page also lists the leader’s direct email, cell and WhatsApp.
             </p>
